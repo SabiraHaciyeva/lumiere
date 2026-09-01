@@ -15,12 +15,11 @@ function ProductCard({ product, columnsCount = 4 }) {
 
   if (!product) return null;
 
-  // 5 sütunlu düzülüşü aşkar edirik (ölçüləri avtomatik uyğunlaşdırmaq üçün)
   const isFiveCols = columnsCount === 5;
   const favorites = shop.favorites || [];
   const isFavorite = favorites.some((fav) => fav.id === product.id);
 
-  // 1. FAVORİTƏ ƏLAVƏ / ÇIXARMA (Detallar səhifəsinə keçidi saxlayır)
+  // 1. FAVORİTƏ ƏLAVƏ / ÇIXARMA
   const handleToggleFavorite = (e) => {
     e.stopPropagation();
     if (shop.toggleFavorite) {
@@ -37,7 +36,7 @@ function ProductCard({ product, columnsCount = 4 }) {
     navigate(`/product/${product.id}`);
   };
 
-  // 3. ENDİRİM FAİZİNİN DƏQİQ HESABLANMASI
+  // 3. ENDİRİM FAİZİ
   const discountPercent =
     product.oldPrice && product.price
       ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
@@ -53,10 +52,12 @@ function ProductCard({ product, columnsCount = 4 }) {
         border: "1px solid #f0e8e2",
         display: "flex",
         flexDirection: "column",
-        height: "100%", // Bütün kartların eyni hündürlükdə düzülməsi üçün
+        height: "100%",
+        width: "100%",
+        minWidth: 0,
         boxSizing: "border-box",
-        // 5 sütunda kartın daxili boşluğunu yüngülləşdiririk
-        p: isFiveCols ? 1.2 : 1.8,
+        // Hər ölçüdə xalis yer buraxan elastik padding:
+        p: { xs: 1, sm: 1.2, md: isFiveCols ? 1.2 : 1.5 },
         cursor: "pointer",
         transition: "all 0.25s ease",
         "&:hover": {
@@ -66,18 +67,16 @@ function ProductCard({ product, columnsCount = 4 }) {
         },
       }}
     >
-      {/* ========================================================================= */}
-      {/* 1. ŞƏKİL VƏ BADGELƏR BÖLMƏSİ */}
-      {/* ========================================================================= */}
+      {/* 1. ŞƏKİL VƏ BADGELƏR */}
       <Box
         sx={{
           position: "relative",
           width: "100%",
-          aspectRatio: "1 / 1", // 1:1 Kvadrat proporsional şəkil qutusu
+          aspectRatio: "1 / 1",
           bgcolor: "#f9f6f3",
           borderRadius: "6px",
           overflow: "hidden",
-          mb: 1.5,
+          mb: 1.2,
         }}
       >
         <Box
@@ -96,52 +95,48 @@ function ProductCard({ product, columnsCount = 4 }) {
           }}
         />
 
-        {/* SOL ÜST: YENİ VƏ ENDİRİM NİŞANLARI */}
+        {/* Badgelər */}
         <Box
           sx={{
             position: "absolute",
-            top: 8,
-            left: 8,
+            top: 6,
+            left: 6,
             display: "flex",
             flexDirection: "column",
-            gap: 0.5,
+            gap: 0.4,
             alignItems: "flex-start",
             zIndex: 2,
           }}
         >
-          {/* YENİ NİŞANI */}
           {product.isNew && (
             <Box
               sx={{
-                bgcolor: "#205c22", // Təsdiqlənmiş zərif yaşıl ton
+                bgcolor: "#205c22",
                 color: "#ffffff",
-                fontSize: isFiveCols ? "0.6rem" : "0.65rem",
+                fontSize: { xs: "0.55rem", sm: "0.62rem" },
                 fontWeight: 700,
-                letterSpacing: "0.5px",
+                letterSpacing: "0.4px",
                 textTransform: "uppercase",
-                px: 0.9,
-                py: 0.3,
+                px: 0.7,
+                py: 0.2,
                 borderRadius: "3px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.12)",
               }}
             >
               YENİ
             </Box>
           )}
 
-          {/* ENDİRİM NİŞANI */}
           {discountPercent && (
             <Box
               sx={{
-                bgcolor: "#910e04", // Təsdiqlənmiş zərif qırmızı ton
+                bgcolor: "#910e04",
                 color: "#ffffff",
-                fontSize: isFiveCols ? "0.6rem" : "0.65rem",
+                fontSize: { xs: "0.55rem", sm: "0.62rem" },
                 fontWeight: 700,
-                letterSpacing: "0.3px",
-                px: 0.9,
-                py: 0.3,
+                letterSpacing: "0.2px",
+                px: 0.7,
+                py: 0.2,
                 borderRadius: "3px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.12)",
               }}
             >
               -{discountPercent}%
@@ -149,50 +144,41 @@ function ProductCard({ product, columnsCount = 4 }) {
           )}
         </Box>
 
-        {/* SAĞ ÜST: FAVORİT ÜRƏK DÜYMƏSİ */}
+        {/* Favorit Düyməsi */}
         <IconButton
           onClick={handleToggleFavorite}
           sx={{
             position: "absolute",
-            top: 8,
-            right: 8,
+            top: 6,
+            right: 6,
             bgcolor: "rgba(255,255,255,0.9)",
-            p: 0.6,
-            boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+            p: 0.5,
+            boxShadow: "0 2px 5px rgba(0,0,0,0.06)",
             transition: "all 0.2s ease",
-            "&:hover": { bgcolor: "#ffffff", transform: "scale(1.1)" },
+            "&:hover": { bgcolor: "#ffffff", transform: "scale(1.08)" },
             zIndex: 2,
           }}
         >
           {isFavorite ? (
-            <FavoriteIcon
-              sx={{
-                fontSize: isFiveCols ? "16px" : "18px",
-                color: "#9c0a06", // Təsdiqlənmiş favorit qırmızısı
-              }}
-            />
+            <FavoriteIcon sx={{ fontSize: { xs: "15px", sm: "17px" }, color: "#9c0a06" }} />
           ) : (
-            <FavoriteBorderIcon
-              sx={{
-                fontSize: isFiveCols ? "16px" : "18px",
-                color: "#4a3b34",
-              }}
-            />
+            <FavoriteBorderIcon sx={{ fontSize: { xs: "15px", sm: "17px" }, color: "#4a3b34" }} />
           )}
         </IconButton>
       </Box>
 
-      {/* ========================================================================= */}
-      {/* 2. KATEQORİYA VƏ MƏHSUL ADI */}
-      {/* ========================================================================= */}
+      {/* 2. KATEQORİYA VƏ AD */}
       <Typography
         sx={{
-          fontSize: isFiveCols ? "0.6rem" : "0.66rem",
-          letterSpacing: "0.8px",
+          fontSize: { xs: "0.58rem", sm: "0.64rem" },
+          letterSpacing: "0.6px",
           textTransform: "uppercase",
           color: "#998b82",
           fontWeight: 600,
-          mb: 0.4,
+          mb: 0.3,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         }}
       >
         {product.category}
@@ -200,12 +186,12 @@ function ProductCard({ product, columnsCount = 4 }) {
 
       <Typography
         sx={{
-          fontSize: isFiveCols ? "0.82rem" : "0.9rem",
+          fontSize: { xs: "0.78rem", sm: "0.85rem", md: isFiveCols ? "0.82rem" : "0.88rem" },
           fontWeight: 600,
           color: "#2c221e",
-          lineHeight: 1.3,
-          minHeight: "2.6em", // Məhsul adları qısa olsa belə hündürlük bərabər qalır
-          mb: 0.8,
+          lineHeight: 1.25,
+          minHeight: "2.5em",
+          mb: 0.6,
           display: "-webkit-box",
           WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",
@@ -215,47 +201,24 @@ function ProductCard({ product, columnsCount = 4 }) {
         {product.name}
       </Typography>
 
-      {/* ========================================================================= */}
-      {/* 3. REYTİNQ BÖLMƏSİ */}
-      {/* ========================================================================= */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 1 }}>
-        <StarIcon sx={{ fontSize: isFiveCols ? "13px" : "15px", color: "#c5a894" }} />
-        <Typography
-          sx={{
-            fontSize: isFiveCols ? "0.72rem" : "0.78rem",
-            fontWeight: 600,
-            color: "#2c221e",
-          }}
-        >
+      {/* 3. REYTİNQ */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.4, mb: 0.8 }}>
+        <StarIcon sx={{ fontSize: { xs: "12px", sm: "14px" }, color: "#c5a894" }} />
+        <Typography sx={{ fontSize: { xs: "0.68rem", sm: "0.74rem" }, fontWeight: 600, color: "#2c221e" }}>
           {product.rating || "4.8"}
         </Typography>
-        <Typography
-          sx={{
-            fontSize: isFiveCols ? "0.68rem" : "0.72rem",
-            color: "#998b82",
-          }}
-        >
+        <Typography sx={{ fontSize: { xs: "0.64rem", sm: "0.7rem" }, color: "#998b82" }}>
           ({product.reviewsCount || "85"})
         </Typography>
       </Box>
 
-      {/* ========================================================================= */}
-      {/* 4. QİYMƏT BLOKU */}
-      {/* ========================================================================= */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "baseline",
-          gap: 0.8,
-          mb: 1.5,
-          mt: "auto", // Qiyməti və düymələri kartın ən aşağısına bərabər hizalayır
-        }}
-      >
+      {/* 4. QİYMƏT */}
+      <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.6, mb: 1.2, mt: "auto" }}>
         <Typography
           sx={{
             fontWeight: 700,
             color: "#2c221e",
-            fontSize: isFiveCols ? "0.92rem" : "1.02rem",
+            fontSize: { xs: "0.84rem", sm: "0.95rem", md: isFiveCols ? "0.9rem" : "1rem" },
           }}
         >
           {Number(product.price).toFixed(2)} AZN
@@ -265,7 +228,7 @@ function ProductCard({ product, columnsCount = 4 }) {
             sx={{
               textDecoration: "line-through",
               color: "#a89c94",
-              fontSize: isFiveCols ? "0.72rem" : "0.78rem",
+              fontSize: { xs: "0.66rem", sm: "0.74rem" },
             }}
           >
             {Number(product.oldPrice).toFixed(2)} AZN
@@ -273,22 +236,19 @@ function ProductCard({ product, columnsCount = 4 }) {
         )}
       </Box>
 
-      
-      {/* ========================================================================= */}
-      {/* 5. SAY SEÇİCİ VƏ SƏBƏT DÜYMƏSİ (4 və 5 Sütunda Tam Sığışan Zərif Quruluş) */}
-      {/* ========================================================================= */}
+      {/* 5. SAY SEÇİCİ VƏ SƏBƏT DÜYMƏSİ */}
       <Box
         onClick={(e) => e.stopPropagation()}
         sx={{
           display: "flex",
-          flexDirection: isFiveCols ? "column" : { xs: "column", lg: "row" },//commit-1responsive cart pb
-          mt: "auto",
+          flexDirection: "column",
           gap: 0.6,
           width: "100%",
           alignItems: "center",
+          mt: "auto",
         }}
       >
-        {/* Say Seçici (- 1 +) - Yığcam və rahat */}
+        {/* Say Seçici */}
         <Box
           sx={{
             display: "flex",
@@ -297,23 +257,24 @@ function ProductCard({ product, columnsCount = 4 }) {
             border: "1px solid #e0d4cb",
             borderRadius: "4px",
             bgcolor: "#faf8f6",
-            height: 32,
-            width: isFiveCols ? "100%" : { xs: "100%", lg: "52px" }, // commit-1responsive cart pb
+            height: 28,
+            width: "100%",
             flexShrink: 0,
             px: 0.8,
             boxSizing: "border-box",
           }}
         >
           <button
+            type="button"
             onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
             style={{
               background: "none",
               border: "none",
               cursor: "pointer",
-              fontSize: "14px",
+              fontSize: "13px",
               fontWeight: 600,
               color: "#2c221e",
-              padding: "0",// commit-1responsive cart pb
+              padding: 0,
               lineHeight: 1,
             }}
           >
@@ -321,7 +282,7 @@ function ProductCard({ product, columnsCount = 4 }) {
           </button>
           <Typography
             sx={{
-              fontSize: "0.76rem",
+              fontSize: "0.72rem",
               fontWeight: 600,
               color: "#2c221e",
               userSelect: "none",
@@ -330,15 +291,16 @@ function ProductCard({ product, columnsCount = 4 }) {
             {quantity}
           </Typography>
           <button
+            type="button"
             onClick={() => setQuantity((prev) => prev + 1)}
             style={{
               background: "none",
               border: "none",
               cursor: "pointer",
-              fontSize: "14px",
+              fontSize: "13px",
               fontWeight: 600,
               color: "#2c221e",
-              padding: "0",// commit-1responsive cart pb
+              padding: 0,
               lineHeight: 1,
             }}
           >
@@ -346,28 +308,29 @@ function ProductCard({ product, columnsCount = 4 }) {
           </button>
         </Box>
 
-        {/* Səbətə Əlavə Et Düyməsi */}
+        {/* Səbətə Əlavə Et Düyməsi (Sıxılmayan və daşmayan elastik ölçü) */}
         <Button
           fullWidth
           onClick={() => shop.addToCart && shop.addToCart(product, quantity)}
+          startIcon={<ShoppingBagOutlinedIcon sx={{ fontSize: { xs: "14px !important", sm: "15px !important" } }} />}
           sx={{
             bgcolor: "#241e1b",
             color: "#ffffff",
-            fontSize: "0.64rem", 
+            fontSize: { xs: "0.62rem", sm: "0.66rem", md: isFiveCols ? "0.62rem" : "0.68rem" },
             fontWeight: 600,
-            letterSpacing: "0.3px", // Genişliyi yığcamlaşdırırıq
+            letterSpacing: "0.2px",
             textTransform: "uppercase",
             borderRadius: "4px",
             height: 32,
-            px: 0.8,
+            px: 0.5,
             minWidth: 0,
             whiteSpace: "nowrap",
             boxShadow: "none",
+            "& .MuiButton-startIcon": { mr: 0.5 },
             "&:hover": { bgcolor: "#3d322d", boxShadow: "none" },
-            flexGrow: 1, // commit-1responsive cart pb
           }}
         >
-          {isFiveCols ? "ƏLAVƏ ET" : "SƏBƏTƏ ƏLAVƏ ET"}
+          SƏBƏTƏ AT
         </Button>
       </Box>
     </Box>

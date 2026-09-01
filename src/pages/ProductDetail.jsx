@@ -108,9 +108,9 @@ function ProductDetail() {
         <Box
             sx={{
                 bgcolor: "#faf7f4",
-                minHeight: "100vh",
-                pt: { xs: "105px", lg: "125px" },
-                pb: 8,
+                // Hər ekran ölçüsündə Navbar-ın real hündürlüyünə uyğun dəqiq boşluq:
+                pt: { xs: 13, sm: 14, md: 15, lg: 16 },
+                pb: { xs: 4, md: 6 },
             }}
         >
             <Container maxWidth="lg">
@@ -160,7 +160,8 @@ function ProductDetail() {
                                 sx={{
                                     position: "relative",
                                     width: "100%",
-                                    height: { xs: "320px", sm: "380px", md: "420px" },
+                                    aspectRatio: "1 / 1",
+                                    width: "100%",
                                     bgcolor: "#f9f6f3",
                                     borderRadius: "8px",
                                     overflow: "hidden",
@@ -387,7 +388,7 @@ function ProductDetail() {
                             </Box>
 
                             {/* TAB MƏZMUNU */}
-                            <Box sx={{ minHeight: "80px" }}>
+                            <Box sx={{ mt: 1 }}>
                                 {activeTab === "about" && (
                                     <Typography sx={{ fontSize: "0.84rem", color: "#544640", lineHeight: 1.65 }}>
                                         {product.details}

@@ -228,7 +228,7 @@ function ShopPage() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [category, subCategory, currentPage]);
 
-    const itemsPerPage = isDesktop ? columnsCount * 2 : 8;
+    const itemsPerPage = isDesktop ? columnsCount * 2 : 12;
 
     useEffect(() => {
         setSelectedSubGroups(subCategory ? [subCategory] : []);
@@ -353,6 +353,7 @@ function ShopPage() {
             .sort((a, b) => {
                 if (selectedSort === "price-low") return a.price - b.price;
                 if (selectedSort === "price-high") return b.price - a.price;
+                if (selectedSort === "nameA-Z") return a.name.localeCompare(b.name, "az");
                 return 0;
             });
     }, [
@@ -395,6 +396,7 @@ function ShopPage() {
             </Box>
 
             {/* 1. QİYMƏT */}
+           {/* 1. QİYMƏT */}
             <Accordion defaultExpanded disableGutters elevation={0} sx={{ "&:before": { display: "none" } }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ fontSize: 18 }} />} sx={{ p: 0, minHeight: 38 }}>
                     <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#2c221e" }}>Qiymət</Typography>
@@ -409,11 +411,69 @@ function ShopPage() {
                         }}
                         min={0}
                         max={150}
-                        sx={{ color: "#2c221e", height: 3, "& .MuiSlider-thumb": { width: 12, height: 12, bgcolor: "#2c221e" } }}
+                        sx={{
+                            color: "#2c221e",
+                            height: 3,
+                            mb: 1.5,
+                            "& .MuiSlider-thumb": { width: 12, height: 12, bgcolor: "#2c221e" },
+                        }}
                     />
-                    <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-                        <TextField size="small" value={`${minPrice} AZN`} sx={{ "& input": { fontSize: "0.78rem", py: 0.6, textAlign: "center" } }} />
-                        <TextField size="small" value={`${maxPrice} AZN`} sx={{ "& input": { fontSize: "0.78rem", py: 0.6, textAlign: "center" } }} />
+                    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                        <TextField
+                            size="small"
+                            type="text"
+                            inputMode="numeric"
+                            value={minPrice === 0 ? "" : minPrice}
+                            placeholder="0"
+                            onChange={(e) => {
+                                const val = e.target.value.replace(/[^0-9]/g, "");
+                                const num = val === "" ? 0 : Math.min(150, Number(val));
+                                setMinPrice(num);
+                                setCurrentPage(1);
+                            }}
+                            slotProps={{
+                                htmlInput: {
+                                    sx: {
+                                        fontSize: "0.8rem",
+                                        py: 0.6,
+                                        px: 0.5,
+                                        textAlign: "center",
+                                    },
+                                },
+                            }}
+                            sx={{
+                                bgcolor: "#fff",
+                                "& .MuiOutlinedInput-notchedOutline": { borderColor: "#e6ded8" },
+                            }}
+                        />
+                        <Typography sx={{ fontSize: "0.8rem", color: "#998b82", fontWeight: 600 }}>-</Typography>
+                        <TextField
+                            size="small"
+                            type="text"
+                            inputMode="numeric"
+                            value={maxPrice === 0 ? "" : maxPrice}
+                            placeholder="150"
+                            onChange={(e) => {
+                                const val = e.target.value.replace(/[^0-9]/g, "");
+                                const num = val === "" ? 0 : Math.min(150, Number(val));
+                                setMaxPrice(num);
+                                setCurrentPage(1);
+                            }}
+                            slotProps={{
+                                htmlInput: {
+                                    sx: {
+                                        fontSize: "0.8rem",
+                                        py: 0.6,
+                                        px: 0.5,
+                                        textAlign: "center",
+                                    },
+                                },
+                            }}
+                            sx={{
+                                bgcolor: "#fff",
+                                "& .MuiOutlinedInput-notchedOutline": { borderColor: "#e6ded8" },
+                            }}
+                        />
                     </Box>
                 </AccordionDetails>
             </Accordion>
@@ -521,9 +581,8 @@ function ShopPage() {
         <Box
             sx={{
                 bgcolor: "#faf7f4",
-                minHeight: "100vh",
-                pt: { xs: "105px", md: "125px", lg: "135px" },
-                pb: 6,
+                pt: { xs: 13, sm: 14, md: 15, lg: 16 },
+                pb: { xs: 5, md: 7 },
             }}
         >
             <Container maxWidth="xl" sx={{ px: { xs: 1.5, sm: 2.5, md: 3 } }}>
@@ -587,6 +646,7 @@ function ShopPage() {
                                     <MenuItem value="bestseller">Ən çox satılanlar</MenuItem>
                                     <MenuItem value="price-low">Qiymət: Ucuzdan Bahaya</MenuItem>
                                     <MenuItem value="price-high">Qiymət: Bahadan Ucuza</MenuItem>
+                                    <MenuItem value="nameA-Z">A-dan Z-yə</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
@@ -652,12 +712,20 @@ function ShopPage() {
                     {isDesktop && (
                         <Box
                             sx={{
-                                width: 240,
+                                width: { md: 220, lg: 240 },
                                 flexShrink: 0,
                                 bgcolor: "#ffffff",
                                 borderRadius: "8px",
                                 border: "1px solid #efe7e1",
                                 p: 2,
+                                position: "sticky",
+                                top: { md: 100, lg: 120 }, // Header-in altından səliqəli yapışaraq qalır
+                                alignSelf: "flex-start",
+                                maxHeight: "calc(100vh - 140px)",
+                                overflowY: "auto", // Filtr uzanarsa daxilində skroll olur
+                                overflowX: "hidden",
+                                "&::-webkit-scrollbar": { width: 4 },
+                                "&::-webkit-scrollbar-thumb": { bgcolor: "#e0d4cb", borderRadius: 2 },
                             }}
                         >
                             {FilterContent}
@@ -720,9 +788,10 @@ function ShopPage() {
                                     gridTemplateColumns: {
                                         xs: "repeat(2, 1fr)",
                                         sm: "repeat(3, 1fr)",
-                                        md: `repeat(${columnsCount}, 1fr)`,
+                                        md: "repeat(3, 1fr)",
+                                        lg: `repeat(${columnsCount}, 1fr)`,
                                     },
-                                    gap: { xs: 1, sm: 1.5, md: columnsCount === 5 ? 1.2 : 2 },
+                                    gap: { xs: 1, sm: 1.5, md: 1.5, lg: columnsCount === 5 ? 1.2 : 2 },
                                 }}
                             >
                                 {paginatedProducts.map((item) => (
