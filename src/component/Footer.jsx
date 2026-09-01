@@ -1,33 +1,48 @@
+import { Link } from "react-router";
 import { Box, Container, Divider, IconButton, Typography } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import PinterestIcon from "@mui/icons-material/Pinterest";
-import MusicNoteIcon from "@mui/icons-material/MusicNote"; // TikTok əvəzi
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
 
 const BEIGE = "#DAC0B1";
 const BEIGE_LIGHT = "#f3e8e0";
 const TEXT_DARK = "#3a2e2a";
-const TEXT_LIGHT = "#6b5b52";
+
+const shopLinks = [
+  { label: "Üz Baxımı", path: "/face" },
+  { label: "Saç Baxımı", path: "/hair" },
+  { label: "Bədən Baxımı", path: "/body" },
+  { label: "Ətirlər", path: "/fragrance" },
+  { label: "Makiyaj", path: "/makeup" },
+  { label: "Yeni Gələnlər", path: "/new" },
+  { label: "Endirimlər", path: "/sale" },
+];
+
+const discoverLinks = [
+  { label: "Haqqımızda", path: "/about" },
+  { label: "Ən Çox Satılanlar", path: "/collections/best-sellers" },
+  { label: "Xüsusi Təkliflər", path: "/sale" },
+  { label: "Yeni Gələnlər", path: "/new" },
+];
+
+const helpLinks = [
+  { label: "Müştəri Dəstəyi (WhatsApp)", href: "https://wa.me/994500000000", isExternal: true },
+  { label: "E-poçt ilə Əlaqə", href: "mailto:info@lumiere.az", isExternal: true },
+  { label: "Çatdırılma və Qaydalar", path: "/about#delivery", isExternal: false },
+];
+
+const socialLinks = [
+  { icon: InstagramIcon, href: "https://instagram.com" },
+  { icon: FacebookIcon, href: "https://facebook.com" },
+  { icon: PinterestIcon, href: "https://pinterest.com" },
+  { icon: MusicNoteIcon, href: "https://tiktok.com" },
+];
 
 function Footer() {
-  const shopLinks = [
-    "Üz Baxımı",
-    "Saç Baxımı",
-    "Bədən Baxımı",
-    "Ətirlər",
-    "Makiyaj",
-    "Yeni",
-    "Endirimlər",
-  ];
-
-  const discoverLinks = [
-    "Haqqımızda",
-    "Gözəllik ritualı",
-    "Beauty Journal",
-    "Sustainability",
-  ];
-
-  const helpLinks = ["Çatdırılma", "Ödəniş", "Qaytarma", "FAQ", "Əlaqə"];
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <Box sx={{ bgcolor: TEXT_DARK, color: BEIGE_LIGHT, mt: 0 }}>
@@ -38,109 +53,138 @@ function Footer() {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr 1fr",
+              sm: "repeat(3, 1fr)",
               md: "repeat(3, 1fr) 1.5fr 1.5fr",
             },
             gap: { xs: 4, md: 3 },
             alignItems: "flex-start",
           }}
         >
-          {/* SHOP */}
+          {/* 1. MAĞAZA */}
           <Box>
             <Typography
               sx={{
                 fontSize: "0.75rem",
-                fontWeight: 500,
+                fontWeight: 600,
                 letterSpacing: "1.5px",
                 textTransform: "uppercase",
                 color: BEIGE,
                 mb: 2.5,
               }}
             >
-              Shop
+              Mağaza
             </Typography>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.2 }}>
               {shopLinks.map((item) => (
                 <Typography
-                  key={item}
+                  key={item.label}
+                  component={Link}
+                  to={item.path}
+                  onClick={scrollToTop}
                   sx={{
                     fontSize: "0.85rem",
                     color: `${BEIGE_LIGHT}99`,
-                    cursor: "pointer",
-                    transition: "color 0.2s",
+                    textDecoration: "none",
+                    transition: "color 0.2s ease",
                     "&:hover": { color: BEIGE_LIGHT },
                   }}
                 >
-                  {item}
+                  {item.label}
                 </Typography>
               ))}
             </Box>
           </Box>
 
-          {/* DISCOVER */}
+          {/* 2. KƏŞF ET */}
           <Box>
             <Typography
               sx={{
                 fontSize: "0.75rem",
-                fontWeight: 500,
+                fontWeight: 600,
                 letterSpacing: "1.5px",
                 textTransform: "uppercase",
                 color: BEIGE,
                 mb: 2.5,
               }}
             >
-              Discover
+              Kəşf Et
             </Typography>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.2 }}>
               {discoverLinks.map((item) => (
                 <Typography
-                  key={item}
+                  key={item.label}
+                  component={Link}
+                  to={item.path}
+                  onClick={scrollToTop}
                   sx={{
                     fontSize: "0.85rem",
                     color: `${BEIGE_LIGHT}99`,
-                    cursor: "pointer",
-                    transition: "color 0.2s",
+                    textDecoration: "none",
+                    transition: "color 0.2s ease",
                     "&:hover": { color: BEIGE_LIGHT },
                   }}
                 >
-                  {item}
+                  {item.label}
                 </Typography>
               ))}
             </Box>
           </Box>
 
-          {/* HELP */}
+          {/* 3. KÖMƏK */}
           <Box>
             <Typography
               sx={{
                 fontSize: "0.75rem",
-                fontWeight: 500,
+                fontWeight: 600,
                 letterSpacing: "1.5px",
                 textTransform: "uppercase",
                 color: BEIGE,
                 mb: 2.5,
               }}
             >
-              Help
+              Kömək
             </Typography>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.2 }}>
-              {helpLinks.map((item) => (
-                <Typography
-                  key={item}
-                  sx={{
-                    fontSize: "0.85rem",
-                    color: `${BEIGE_LIGHT}99`,
-                    cursor: "pointer",
-                    transition: "color 0.2s",
-                    "&:hover": { color: BEIGE_LIGHT },
-                  }}
-                >
-                  {item}
-                </Typography>
-              ))}
+              {helpLinks.map((item) =>
+                item.isExternal ? (
+                  <Typography
+                    key={item.label}
+                    component="a"
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      fontSize: "0.85rem",
+                      color: `${BEIGE_LIGHT}99`,
+                      textDecoration: "none",
+                      transition: "color 0.2s ease",
+                      "&:hover": { color: BEIGE_LIGHT },
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
+                ) : (
+                  <Typography
+                    key={item.label}
+                    component={Link}
+                    to={item.path}
+                    onClick={scrollToTop}
+                    sx={{
+                      fontSize: "0.85rem",
+                      color: `${BEIGE_LIGHT}99`,
+                      textDecoration: "none",
+                      transition: "color 0.2s ease",
+                      "&:hover": { color: BEIGE_LIGHT },
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
+                )
+              )}
             </Box>
           </Box>
 
-          {/* LOGO + SLOGAN */}
+          {/* 4. LOGO VƏ SLOGAN */}
           <Box sx={{ textAlign: { xs: "left", md: "center" } }}>
             <Typography
               sx={{
@@ -172,7 +216,7 @@ function Footer() {
                 color: `${BEIGE_LIGHT}90`,
                 lineHeight: 1.6,
                 maxWidth: 200,
-                mx: "auto",
+                mx: { xs: 0, md: "auto" },
               }}
             >
               Təbiətdən ilham alan gözəllik ritualınız.
@@ -187,31 +231,33 @@ function Footer() {
                 mt: 2,
               }}
             >
-              {[InstagramIcon, FacebookIcon, PinterestIcon, MusicNoteIcon].map(
-                (Icon, i) => (
-                  <IconButton
-                    key={i}
-                    size="small"
-                    sx={{
-                      color: `${BEIGE_LIGHT}80`,
-                      p: 0.6,
-                      "&:hover": { color: BEIGE_LIGHT },
-                    }}
-                  >
-                    <Icon sx={{ fontSize: 18 }} />
-                  </IconButton>
-                )
-              )}
+              {socialLinks.map(({ icon: Icon, href }, i) => (
+                <IconButton
+                  key={i}
+                  component="a"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="small"
+                  sx={{
+                    color: `${BEIGE_LIGHT}80`,
+                    p: 0.6,
+                    "&:hover": { color: BEIGE_LIGHT },
+                  }}
+                >
+                  <Icon sx={{ fontSize: 18 }} />
+                </IconButton>
+              ))}
             </Box>
           </Box>
 
-          {/* QUOTE */}
+          {/* 5. SITAT */}
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: { xs: "flex-start", md: "flex-end" },
-              gridColumn: { xs: "span 2", md: "span 1" },
+              gridColumn: { xs: "span 2", sm: "span 1" },
             }}
           >
             <Typography
@@ -238,7 +284,7 @@ function Footer() {
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", md: "row" },
+            flexDirection: { xs: "column", sm: "row" },
             alignItems: "center",
             justifyContent: "space-between",
             gap: 2,
@@ -246,27 +292,10 @@ function Footer() {
         >
           {/* Copyright */}
           <Typography sx={{ fontSize: "0.75rem", color: `${BEIGE_LIGHT}60` }}>
-            © 2024 Lumière. Bütün hüquqlar qorunur.
+            © {new Date().getFullYear()} Lumière. Bütün hüquqlar qorunur.
           </Typography>
 
-          {/* Linklər */}
-          <Box sx={{ display: "flex", gap: 3 }}>
-            {["İstifadə şərtləri", "Məxfilik siyasəti"].map((text) => (
-              <Typography
-                key={text}
-                sx={{
-                  fontSize: "0.75rem",
-                  color: `${BEIGE_LIGHT}60`,
-                  cursor: "pointer",
-                  "&:hover": { color: BEIGE_LIGHT },
-                }}
-              >
-                {text}
-              </Typography>
-            ))}
-          </Box>
-
-          {/* Dil seçimi */}
+          {/* Dil Seçimi */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             {["AZ", "EN", "RU"].map((lang, i) => (
               <Typography
@@ -275,7 +304,7 @@ function Footer() {
                   fontSize: "0.75rem",
                   color: i === 0 ? BEIGE_LIGHT : `${BEIGE_LIGHT}60`,
                   cursor: "pointer",
-                  fontWeight: i === 0 ? 500 : 400,
+                  fontWeight: i === 0 ? 600 : 400,
                   "&:hover": { color: BEIGE_LIGHT },
                 }}
               >
