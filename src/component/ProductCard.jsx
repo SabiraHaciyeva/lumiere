@@ -73,7 +73,7 @@ function ProductCard({ product, columnsCount = 4 }) {
         sx={{
           position: "relative",
           width: "100%",
-          paddingTop: "100%", // 1:1 Kvadrat proporsional şəkil qutusu
+          aspectRatio: "1 / 1", // 1:1 Kvadrat proporsional şəkil qutusu
           bgcolor: "#f9f6f3",
           borderRadius: "6px",
           overflow: "hidden",
@@ -273,9 +273,7 @@ function ProductCard({ product, columnsCount = 4 }) {
         )}
       </Box>
 
-      {/* ========================================================================= */}
-      {/* 5. SAY SEÇİCİ VƏ SƏBƏT DÜYMƏSİ (Mətn Sıxılmayan Dinamik Quruluş) */}
-      {/* ========================================================================= */}
+      
       {/* ========================================================================= */}
       {/* 5. SAY SEÇİCİ VƏ SƏBƏT DÜYMƏSİ (4 və 5 Sütunda Tam Sığışan Zərif Quruluş) */}
       {/* ========================================================================= */}
@@ -283,8 +281,9 @@ function ProductCard({ product, columnsCount = 4 }) {
         onClick={(e) => e.stopPropagation()}
         sx={{
           display: "flex",
-          flexDirection: isFiveCols ? "column" : "row",
-          gap: 0.8,
+          flexDirection: isFiveCols ? "column" : { xs: "column", lg: "row" },//commit-1responsive cart pb
+          mt: "auto",
+          gap: 0.6,
           width: "100%",
           alignItems: "center",
         }}
@@ -299,9 +298,9 @@ function ProductCard({ product, columnsCount = 4 }) {
             borderRadius: "4px",
             bgcolor: "#faf8f6",
             height: 32,
-            width: isFiveCols ? "100%" : "62px", // 70px yerinə 62px edərək düyməyə yer açırıq
+            width: isFiveCols ? "100%" : { xs: "100%", lg: "52px" }, // commit-1responsive cart pb
             flexShrink: 0,
-            px: 0.5,
+            px: 0.8,
             boxSizing: "border-box",
           }}
         >
@@ -314,7 +313,7 @@ function ProductCard({ product, columnsCount = 4 }) {
               fontSize: "14px",
               fontWeight: 600,
               color: "#2c221e",
-              padding: "0 2px",
+              padding: "0",// commit-1responsive cart pb
               lineHeight: 1,
             }}
           >
@@ -322,7 +321,7 @@ function ProductCard({ product, columnsCount = 4 }) {
           </button>
           <Typography
             sx={{
-              fontSize: "0.78rem",
+              fontSize: "0.76rem",
               fontWeight: 600,
               color: "#2c221e",
               userSelect: "none",
@@ -339,7 +338,7 @@ function ProductCard({ product, columnsCount = 4 }) {
               fontSize: "14px",
               fontWeight: 600,
               color: "#2c221e",
-              padding: "0 2px",
+              padding: "0",// commit-1responsive cart pb
               lineHeight: 1,
             }}
           >
@@ -354,17 +353,18 @@ function ProductCard({ product, columnsCount = 4 }) {
           sx={{
             bgcolor: "#241e1b",
             color: "#ffffff",
-            fontSize: isFiveCols ? "0.62rem" : "0.66rem", // Şrifti zərifləşdiririk ki, tam rahat otursun
+            fontSize: "0.64rem", 
             fontWeight: 600,
             letterSpacing: "0.3px", // Genişliyi yığcamlaşdırırıq
             textTransform: "uppercase",
             borderRadius: "4px",
             height: 32,
-            px: 0.6,
+            px: 0.8,
             minWidth: 0,
             whiteSpace: "nowrap",
             boxShadow: "none",
             "&:hover": { bgcolor: "#3d322d", boxShadow: "none" },
+            flexGrow: 1, // commit-1responsive cart pb
           }}
         >
           {isFiveCols ? "ƏLAVƏ ET" : "SƏBƏTƏ ƏLAVƏ ET"}
