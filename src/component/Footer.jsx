@@ -27,16 +27,16 @@ const discoverLinks = [
 ];
 
 const helpLinks = [
-  { label: "Müştəri Dəstəyi (WhatsApp)", href: "https://wa.me/994500000000", isExternal: true },
-  { label: "E-poçt ilə Əlaqə", href: "mailto:info@lumiere.az", isExternal: true },
+  { label: "Müştəri Dəstəyi (WhatsApp)", href: "https://wa.me/994513546191", isExternal: true },
+  { label: "E-poçt ilə Əlaqə", href: "mailto:sabira.haciyeva2007@gmail.com", isExternal: true },
   { label: "Çatdırılma və Qaydalar", path: "/about#delivery", isExternal: false },
 ];
 
 const socialLinks = [
-  { icon: InstagramIcon, href: "https://instagram.com" },
-  { icon: FacebookIcon, href: "https://facebook.com" },
-  { icon: PinterestIcon, href: "https://pinterest.com" },
-  { icon: MusicNoteIcon, href: "https://tiktok.com" },
+  { icon: InstagramIcon, href: "https://www.instagram.com/haciyeva_sabira?igsi=MThlNGdpZ2c2MjYy" },
+  { icon: FacebookIcon, href: "https://www.google.com/search?sca_esv=19477e370b385ecc&sxsrf=APpeQnvC1zdOsWm7EVlfBwf6IP6ly920Bw:1788283050593&udm=2&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832a9BVCEiB2iPJNekNderQwJGZIG7YID1eBGNWasq2rzBIURiSCrdR156KVg_RXap7nymj7qwomXHj_SiILyyw7QFSHB4HN7nQAWqvV6F5ky9MYo0xZdIijc6pBycbLSLZWgMMIa3s4ULJqrsZAQpfvDo1Dg8Ui6w2RVnWfTfILIjp8E4XQ&q=i+dont+have+one&sa=X&ved=2ahUKEwjN3_O_8c2WAxVDVfEDHX-oHmkQtKgLegQIHBAB&biw=1280&bih=585&dpr=1.5#sv=CAMSURoyKhBlLWRFbU40S212SXZkejhNMg5kRW1ONEttdkl2ZHo4TToOU3FvYUt5c2lLdGRRZE0gBCoXCgFzEhBlLWRFbU40S212SXZkejhNGAEwARgHIImNwb8NSggQARgBIAEoAQ" },
+  { icon: PinterestIcon, href: "https://pin.it/5CpexM7YS" },
+  { icon: MusicNoteIcon, href: "https://open.spotify.com/user/31b4u3sk5zqqf6ddlctdebjqfuf4?si=a49410b199474fa8" },
 ];
 
 function Footer() {

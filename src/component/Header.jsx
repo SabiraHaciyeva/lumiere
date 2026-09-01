@@ -453,7 +453,13 @@ function Header() {
 
             {/* MƏRKƏZ LOQO */}
             <Box sx={{ textAlign: "center", px: { lg: 2, xl: 4 } }}>
-              <NavLink to="/" style={{ textDecoration: "none" }}>
+              <NavLink
+                to="/"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                style={{ textDecoration: "none" }}
+              >
                 <Typography
                   variant="h5"
                   sx={{
@@ -504,7 +510,7 @@ function Header() {
                 >
                   {isSearchOpen ? <CloseIcon sx={{ fontSize: 21 }} /> : <SearchIcon sx={{ fontSize: 21 }} />}
                 </IconButton>
-                
+
                 <IconButton onClick={handleProfileClick} sx={{ color: TEXT_DARK, p: 1 }} title={currentUser ? "Profilim" : "Giriş"}>
                   <PersonOutlineOutlinedIcon sx={{ fontSize: 21 }} />
                 </IconButton>
