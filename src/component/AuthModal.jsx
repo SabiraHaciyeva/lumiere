@@ -25,13 +25,15 @@ const BORDER_COLOR = "#e8ded7";
 
 export default function AuthModal({ open, onClose }) {
   const { login, register, loginWithGoogle } = useAuth();
-  
+
   const [mode, setMode] = useState("login");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [error, setError] = useState("");
 
@@ -41,7 +43,9 @@ export default function AuthModal({ open, onClose }) {
     setLastName("");
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
     setShowPassword(false);
+    setShowConfirmPassword(false);
     setAgreeTerms(false);
     if (onClose) onClose();
   };
@@ -51,38 +55,65 @@ export default function AuthModal({ open, onClose }) {
     setMode(newMode);
   };
 
+  // Xəta yarananda modalı dərhal ən yuxarıya sürüşdürən funksiya
+  const triggerError = (msg) => {
+    setError(msg);
+    setTimeout(() => {
+      const modalContent = document.getElementById("auth-dialog-content");
+      if (modalContent) {
+        modalContent.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 50);
+  };
+
+  const togglePasswordVisibility = (inputId, setter) => {
+    setter((prev) => !prev);
+    setTimeout(() => {
+      const input = document.getElementById(inputId);
+      if (input) {
+        input.focus();
+        const len = input.value.length;
+        input.setSelectionRange(len, len);
+      }
+    }, 0);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
 
     if (mode === "login") {
       if (!email.trim() || !password) {
-        setError("Zəhmət olmasa, bütün sahələri doldurun.");
+        triggerError("Zəhmət olmasa, bütün sahələri doldurun.");
         return;
       }
       const res = login(email, password);
       if (!res?.success) {
-        setError(res?.message || "Giriş uğursuz oldu.");
+        triggerError(res?.message || "Giriş uğursuz oldu.");
       } else {
         handleClose();
       }
     } else {
-      if (!firstName.trim() || !lastName.trim() || !email.trim() || !password) {
-        setError("Zəhmət olmasa, bütün sahələri doldurun.");
+      if (!firstName.trim() || !lastName.trim() || !email.trim() || !password || !confirmPassword) {
+        triggerError("Zəhmət olmasa, bütün sahələri doldurun.");
         return;
       }
       if (password.length < 6) {
-        setError("Şifrə minimum 6 simvol olmalıdır.");
+        triggerError("Şifrə minimum 6 simvol olmalıdır.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        triggerError("Şifrələr bir-biri ilə uyğun gəlmir.");
         return;
       }
       if (!agreeTerms) {
-        setError("İstifadə şərtlərini qəbul etməlisiniz.");
+        triggerError("İstifadə şərtlərini qəbul etməlisiniz.");
         return;
       }
       const fullName = `${firstName.trim()} ${lastName.trim()}`;
       const res = register(fullName, email, password);
       if (!res?.success) {
-        setError(res?.message || "Qeydiyyat uğursuz oldu.");
+        triggerError(res?.message || "Qeydiyyat uğursuz oldu.");
       } else {
         handleClose();
       }
@@ -96,10 +127,10 @@ export default function AuthModal({ open, onClose }) {
       if (res?.success) {
         handleClose();
       } else {
-        setError(res?.message || "Google ilə daxil olmaq mümkün olmadı.");
+        triggerError(res?.message || "Google ilə daxil olmaq mümkün olmadı.");
       }
     } catch (err) {
-      setError("Xəta baş verdi: " + err.message);
+      triggerError("Xəta baş verdi: " + err.message);
     }
   };
 
@@ -113,10 +144,11 @@ export default function AuthModal({ open, onClose }) {
         paper: {
           sx: {
             borderRadius: "16px",
-            p: { xs: 3, sm: 4 },
+            p: { xs: 2.5, sm: 3.5 },
             bgcolor: "#fdfbf9",
             boxShadow: "0 20px 45px rgba(44,34,30,0.15)",
             position: "relative",
+            maxHeight: "90vh",
           },
         },
       }}
@@ -124,10 +156,11 @@ export default function AuthModal({ open, onClose }) {
       <IconButton
         onClick={handleClose}
         size="small"
+        aria-label="Bağla"
         sx={{
           position: "absolute",
-          top: 16,
-          right: 16,
+          top: 14,
+          right: 14,
           color: TEXT_DARK,
           "&:hover": { bgcolor: "rgba(0,0,0,0.04)" },
         }}
@@ -135,8 +168,8 @@ export default function AuthModal({ open, onClose }) {
         <CloseIcon sx={{ fontSize: 20 }} />
       </IconButton>
 
-      <DialogContent sx={{ p: 0, mt: 1 }}>
-        <Box sx={{ mb: 3 }}>
+      <DialogContent id="auth-dialog-content" sx={{ p: 0, mt: 1, overflowY: "auto" }}>
+        <Box sx={{ mb: 2.5 }}>
           <Typography
             variant="h5"
             sx={{
@@ -144,7 +177,7 @@ export default function AuthModal({ open, onClose }) {
               fontSize: "1.75rem",
               fontWeight: 500,
               color: TEXT_DARK,
-              mb: 0.8,
+              mb: 0.6,
             }}
           >
             {mode === "login" ? "Daxil ol" : "Qeydiyyat"}
@@ -157,22 +190,39 @@ export default function AuthModal({ open, onClose }) {
         </Box>
 
         {error && (
-          <Alert severity="error" sx={{ mb: 2, fontSize: "0.8rem", py: 0.5, borderRadius: "8px" }}>
+          <Alert
+            severity="error"
+            sx={{
+              mb: 2,
+              fontSize: "0.82rem",
+              py: 0.6,
+              borderRadius: "8px",
+              border: "1px solid #f5c2c7",
+              animation: "fadeIn 0.3s ease",
+              "@keyframes fadeIn": {
+                from: { opacity: 0, transform: "translateY(-6px)" },
+                to: { opacity: 1, transform: "translateY(0)" },
+              },
+            }}
+          >
             {error}
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 1.8 }}>
           {mode === "register" && (
             <>
               <Box>
-                <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.6 }}>
+                <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.5 }}>
                   Ad
                 </Typography>
                 <TextField
+                  id="register-firstName"
+                  name="firstName"
                   placeholder="Adınızı daxil edin"
                   size="small"
                   fullWidth
+                  autoComplete="given-name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   sx={{
@@ -187,13 +237,16 @@ export default function AuthModal({ open, onClose }) {
               </Box>
 
               <Box>
-                <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.6 }}>
+                <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.5 }}>
                   Soyad
                 </Typography>
                 <TextField
+                  id="register-lastName"
+                  name="lastName"
                   placeholder="Soyadınızı daxil edin"
                   size="small"
                   fullWidth
+                  autoComplete="family-name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   sx={{
@@ -210,14 +263,17 @@ export default function AuthModal({ open, onClose }) {
           )}
 
           <Box>
-            <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.6 }}>
+            <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.5 }}>
               E-poçt ünvanı
             </Typography>
             <TextField
+              id={mode === "login" ? "login-email" : "register-email"}
+              name="email"
               placeholder="example@mail.com"
               type="email"
               size="small"
               fullWidth
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               sx={{
@@ -232,7 +288,7 @@ export default function AuthModal({ open, onClose }) {
           </Box>
 
           <Box>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.6 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.5 }}>
               <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK }}>
                 Şifrə
               </Typography>
@@ -251,22 +307,40 @@ export default function AuthModal({ open, onClose }) {
             </Box>
 
             <TextField
+              id={mode === "login" ? "login-password" : "register-password"}
+              name="password"
               placeholder={mode === "login" ? "Şifrənizi daxil edin" : "Minimum 6 simvol"}
               type={showPassword ? "text" : "password"}
               size="small"
               fullWidth
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" size="small" sx={{ color: TEXT_LIGHT }}>
-                      {showPassword ? <VisibilityOffOutlinedIcon fontSize="small" /> : <VisibilityOutlinedIcon fontSize="small" />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          togglePasswordVisibility(
+                            mode === "login" ? "login-password" : "register-password",
+                            setShowPassword
+                          )
+                        }
+                        onMouseDown={(e) => e.preventDefault()}
+                        edge="end"
+                        size="small"
+                        aria-label="Şifrəni göstər və ya gizlət"
+                        sx={{ color: TEXT_LIGHT }}
+                      >
+                        {showPassword ? <VisibilityOffOutlinedIcon fontSize="small" /> : <VisibilityOutlinedIcon fontSize="small" />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{
+                "& input::-ms-reveal, & input::-ms-clear": { display: "none" },
                 "& .MuiOutlinedInput-root": {
                   bgcolor: "#ffffff",
                   borderRadius: "8px",
@@ -278,9 +352,62 @@ export default function AuthModal({ open, onClose }) {
           </Box>
 
           {mode === "register" && (
+            <Box>
+              <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.5 }}>
+                Şifrənin təkrarı
+              </Typography>
+              <TextField
+                id="register-confirm-password"
+                name="confirmPassword"
+                placeholder="Şifrəni yenidən daxil edin"
+                type={showConfirmPassword ? "text" : "password"}
+                size="small"
+                fullWidth
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() =>
+                            togglePasswordVisibility(
+                              "register-confirm-password",
+                              setShowConfirmPassword
+                            )
+                          }
+                          onMouseDown={(e) => e.preventDefault()}
+                          edge="end"
+                          size="small"
+                          aria-label="Təkrar şifrəni göstər və ya gizlət"
+                          sx={{ color: TEXT_LIGHT }}
+                        >
+                          {showConfirmPassword ? <VisibilityOffOutlinedIcon fontSize="small" /> : <VisibilityOutlinedIcon fontSize="small" />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                sx={{
+                  "& input::-ms-reveal, & input::-ms-clear": { display: "none" },
+                  "& .MuiOutlinedInput-root": {
+                    bgcolor: "#ffffff",
+                    borderRadius: "8px",
+                    fontSize: "0.85rem",
+                    "& fieldset": { borderColor: BORDER_COLOR },
+                  },
+                }}
+              />
+            </Box>
+          )}
+
+          {mode === "register" && (
             <FormControlLabel
               control={
                 <Checkbox
+                  id="agree-terms"
+                  name="agreeTerms"
                   size="small"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
