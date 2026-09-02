@@ -201,6 +201,7 @@ function ShopPage() {
 
     const theme = useTheme();
     const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+    const isLargeDesktop = useMediaQuery(theme.breakpoints.up("lg"));//responsiv lg ucun
 
     const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
@@ -228,8 +229,12 @@ function ShopPage() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [category, subCategory, currentPage]);
 
-    const itemsPerPage = isDesktop ? columnsCount * 2 : 12;
-
+    const itemsPerPage = isLargeDesktop ? columnsCount * 2 : 12;//resposiv duzelis
+    useEffect(() => {
+        if (!isLargeDesktop && columnsCount === 5) {
+            setColumnsCount(4);
+        }
+    }, [isLargeDesktop, columnsCount]);
     useEffect(() => {
         setSelectedSubGroups(subCategory ? [subCategory] : []);
         setSelectedTags([]);
@@ -396,7 +401,7 @@ function ShopPage() {
             </Box>
 
             {/* 1. QİYMƏT */}
-           {/* 1. QİYMƏT */}
+            {/* 1. QİYMƏT */}
             <Accordion defaultExpanded disableGutters elevation={0} sx={{ "&:before": { display: "none" } }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ fontSize: 18 }} />} sx={{ p: 0, minHeight: 38 }}>
                     <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#2c221e" }}>Qiymət</Typography>
@@ -651,57 +656,55 @@ function ShopPage() {
                             </FormControl>
                         </Box>
 
-                        {isDesktop && (
-                            <Box sx={{ display: "flex", gap: 0.5 }}>
-                                <IconButton
-                                    onClick={() => { setColumnsCount(3); setCurrentPage(1); }}
-                                    title="3 Sütun"
-                                    sx={{
-                                        width: 34,
-                                        height: 34,
-                                        bgcolor: columnsCount === 3 ? "#2c221e" : "#fff",
-                                        border: "1px solid #e6ded8",
-                                        color: columnsCount === 3 ? "#fff" : "#705f56",
-                                        borderRadius: "4px",
-                                        "&:hover": { bgcolor: columnsCount === 3 ? "#453630" : "#f5ede7" },
-                                    }}
-                                >
-                                    <ViewColumnIcon fontSize="small" />
-                                </IconButton>
+                        <Box sx={{ display: { xs: "none", lg: "flex" }, gap: 0.5 }}>
+                            <IconButton
+                                onClick={() => { setColumnsCount(3); setCurrentPage(1); }}
+                                title="3 Sütun"
+                                sx={{
+                                    width: 34,
+                                    height: 34,
+                                    bgcolor: columnsCount === 3 ? "#2c221e" : "#fff",
+                                    border: "1px solid #e6ded8",
+                                    color: columnsCount === 3 ? "#fff" : "#705f56",
+                                    borderRadius: "4px",
+                                    "&:hover": { bgcolor: columnsCount === 3 ? "#453630" : "#f5ede7" },
+                                }}
+                            >
+                                <ViewColumnIcon fontSize="small" />
+                            </IconButton>
 
-                                <IconButton
-                                    onClick={() => { setColumnsCount(4); setCurrentPage(1); }}
-                                    title="4 Sütun"
-                                    sx={{
-                                        width: 34,
-                                        height: 34,
-                                        bgcolor: columnsCount === 4 ? "#2c221e" : "#fff",
-                                        border: "1px solid #e6ded8",
-                                        color: columnsCount === 4 ? "#fff" : "#705f56",
-                                        borderRadius: "4px",
-                                        "&:hover": { bgcolor: columnsCount === 4 ? "#453630" : "#f5ede7" },
-                                    }}
-                                >
-                                    <GridViewIcon fontSize="small" />
-                                </IconButton>
+                            <IconButton
+                                onClick={() => { setColumnsCount(4); setCurrentPage(1); }}
+                                title="4 Sütun"
+                                sx={{
+                                    width: 34,
+                                    height: 34,
+                                    bgcolor: columnsCount === 4 ? "#2c221e" : "#fff",
+                                    border: "1px solid #e6ded8",
+                                    color: columnsCount === 4 ? "#fff" : "#705f56",
+                                    borderRadius: "4px",
+                                    "&:hover": { bgcolor: columnsCount === 4 ? "#453630" : "#f5ede7" },
+                                }}
+                            >
+                                <GridViewIcon fontSize="small" />
+                            </IconButton>
 
-                                <IconButton
-                                    onClick={() => { setColumnsCount(5); setCurrentPage(1); }}
-                                    title="5 Sütun"
-                                    sx={{
-                                        width: 34,
-                                        height: 34,
-                                        bgcolor: columnsCount === 5 ? "#2c221e" : "#fff",
-                                        border: "1px solid #e6ded8",
-                                        color: columnsCount === 5 ? "#fff" : "#705f56",
-                                        borderRadius: "4px",
-                                        "&:hover": { bgcolor: columnsCount === 5 ? "#453630" : "#f5ede7" },
-                                    }}
-                                >
-                                    <ViewComfyIcon fontSize="small" />
-                                </IconButton>
-                            </Box>
-                        )}
+                            <IconButton
+                                onClick={() => { setColumnsCount(5); setCurrentPage(1); }}
+                                title="5 Sütun"
+                                sx={{
+                                    width: 34,
+                                    height: 34,
+                                    bgcolor: columnsCount === 5 ? "#2c221e" : "#fff",
+                                    border: "1px solid #e6ded8",
+                                    color: columnsCount === 5 ? "#fff" : "#705f56",
+                                    borderRadius: "4px",
+                                    "&:hover": { bgcolor: columnsCount === 5 ? "#453630" : "#f5ede7" },
+                                }}
+                            >
+                                <ViewComfyIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
                     </Box>
                 </Box>
 
