@@ -36,7 +36,7 @@ const categories = [
   },
   {
     id: 5,
-    title: "Makiyaj",
+    title: "Makyaj",
     subtitle: "Gözəlliyini vurğula",
     path: "/makeup",
     image: "https://i.ibb.co/5hbFqSy4/makyaj-k5.webp",

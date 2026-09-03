@@ -123,13 +123,13 @@ const dynamicFilterConfig = {
         ],
     },
     makeup: {
-        subGroupTitle: "Makiyaj Kateqoriyaları",
+        subGroupTitle: "Makyaj Kateqoriyaları",
         subGroups: [
             { label: "Tonal Kremlər & Korrektorlar", val: "face-makeup" },
             { label: "Pudralar & Ənliklər", val: "powders" },
             { label: "Göz Kölgələri & Laynerlər", val: "eyes" },
             { label: "Dodaq Boyaları & Parıldadıcılar", val: "lips" },
-            { label: "Makiyaj Fırçaları & Süngərlər", val: "tools" },
+            { label: "Makyaj Fırçaları & Süngərlər", val: "tools" },
         ],
         tagTitle: "Finiş Təsiri",
         tags: [
@@ -152,7 +152,7 @@ const dynamicFilterConfig = {
             { label: "Bədən Baxımı", val: "body" },
             { label: "Saç Baxımı", val: "hair" },
             { label: "Ətirlər", val: "fragrance" },
-            { label: "Makiyaj", val: "makeup" },
+            { label: "Makyaj", val: "makeup" },
         ],
     },
     new: {
@@ -167,7 +167,7 @@ const dynamicFilterConfig = {
             { label: "Bədən Baxımı", val: "body" },
             { label: "Saç Baxımı", val: "hair" },
             { label: "Ətirlər", val: "fragrance" },
-            { label: "Makiyaj", val: "makeup" },
+            { label: "Makyaj", val: "makeup" },
         ],
     },
     sale: {
@@ -182,7 +182,7 @@ const dynamicFilterConfig = {
             { label: "Bədən Baxımı", val: "body" },
             { label: "Saç Baxımı", val: "hair" },
             { label: "Ətirlər", val: "fragrance" },
-            { label: "Makiyaj", val: "makeup" },
+            { label: "Makyaj", val: "makeup" },
         ],
     },
 };

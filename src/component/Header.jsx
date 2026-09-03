@@ -134,7 +134,7 @@ const rightPages = [
       { label: "Pudralar & Ənliklər", path: "/makeup/powders" },
       { label: "Göz Kölgələri & Laynerlər", path: "/makeup/eyes" },
       { label: "Dodaq Boyaları & Parıldadıcılar", path: "/makeup/lips" },
-      { label: "Makiyaj Fırçaları & Süngərlər", path: "/makeup/tools" },
+      { label: "Makyaj Fırçaları & Süngərlər", path: "/makeup/tools" },
     ],
   },
   {

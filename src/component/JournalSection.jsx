@@ -23,7 +23,7 @@ const journalPosts = [
     id: "02",
     tag: "Dəri Ritualı",
     title: "Dərinin təbii işıltısı",
-    desc: "Mükəmməl dəri makiyaj altında gizlənən deyil, dərindən nəmlənmiş və nəfəs alan dəridir.",
+    desc: "Mükəmməl dəri makyaj altında gizlənən deyil, dərindən nəmlənmiş və nəfəs alan dəridir.",
     image: "https://i.ibb.co/ycJLRvZj/journal02.webp",
     path: "/face",
   },

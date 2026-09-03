@@ -14,7 +14,7 @@ const shopLinks = [
   { label: "Saç Baxımı", path: "/hair" },
   { label: "Bədən Baxımı", path: "/body" },
   { label: "Ətirlər", path: "/fragrance" },
-  { label: "Makiyaj", path: "/makeup" },
+  { label: "Makyaj", path: "/makeup" },
   { label: "Yeni Gələnlər", path: "/new" },
   { label: "Endirimlər", path: "/sale" },
 ];
