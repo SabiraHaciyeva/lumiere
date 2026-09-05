@@ -91,7 +91,7 @@ function ProductDetail() {
     const handleToggleFavorite = () => {
         if (shop?.toggleFavorite) {
             shop.toggleFavorite(product);
-        } 
+        }
     };
 
     // Endirim faizinin hesablanması
@@ -175,15 +175,60 @@ function ProductDetail() {
                                 />
 
                                 {/* BADGELƏR */}
-                                <Box sx={{ position: "absolute", top: 12, left: 12, display: "flex", flexDirection: "column", gap: 0.6, zIndex: 2 }}>
+                                {/* BADGELƏR */}
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        top: { xs: 8, sm: 12 },
+                                        left: { xs: 8, sm: 12 },
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: 0.5,
+                                        zIndex: 2,
+                                        alignItems: "flex-start",
+                                    }}
+                                >
                                     {product.isNew && (
-                                        <Box sx={{ bgcolor: "#205c22", color: "#fff", fontSize: "0.68rem", fontWeight: 700, px: 1, py: 0.35, borderRadius: "3px" }}>
+                                        <Box
+                                            sx={{
+                                                bgcolor: "#205c22",
+                                                color: "#fff",
+                                                fontSize: "clamp(0.55rem, 1.8vw, 0.65rem)",
+                                                fontWeight: 700,
+                                                letterSpacing: "0.4px",
+                                                px: { xs: 0.8, sm: 1 },
+                                                py: { xs: 0.25, sm: 0.35 },
+                                                borderRadius: "3px",
+                                                lineHeight: 1.2,
+                                            }}
+                                        >
                                             YENİ
                                         </Box>
                                     )}
                                     {discountPercent && (
-                                        <Box sx={{ bgcolor: "#910e04", color: "#fff", fontSize: "0.68rem", fontWeight: 700, px: 1, py: 0.35, borderRadius: "3px" }}>
-                                            -{discountPercent}% ENDİRİM
+                                        <Box
+                                            sx={{
+                                                bgcolor: "#910e04",
+                                                color: "#fff",
+                                                fontSize: "clamp(0.55rem, 1.8vw, 0.65rem)",
+                                                fontWeight: 700,
+                                                letterSpacing: "0.4px",
+                                                px: { xs: 0.8, sm: 1 },
+                                                py: { xs: 0.25, sm: 0.35 },
+                                                borderRadius: "3px",
+                                                lineHeight: 1.2,
+                                            }}
+                                        >
+                                            -{discountPercent}%
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    display: { xs: "none", sm: "inline" },
+                                                    ml: 0.4,
+                                                }}
+                                            >
+                                                ENDİRİM
+                                            </Box>
                                         </Box>
                                     )}
                                 </Box>
@@ -263,68 +308,121 @@ function ProductDetail() {
                             <Divider sx={{ mb: 3, borderColor: "#efe7e1" }} />
 
                             {/* SAY, SƏBƏT VƏ FAVORİT */}
-                            <Box sx={{ display: "flex", gap: 1.5, alignItems: "center", mb: 3.5 }}>
+                            {/* SAY, SƏBƏT, FAVORİT */}
+                            {/* SAY, SƏBƏT, FAVORİT */}
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flexWrap: "nowrap", // Hər zaman yan-yana saxlayır
+                                    alignItems: "center",
+                                    gap: { xs: "clamp(4px, 1.5vw, 12px)", sm: 1.5 },
+                                    width: "100%",
+                                    mb: 3.5,
+                                }}
+                            >
+                                {/* 1. SAY SEÇİCİ */}
                                 <Box
                                     sx={{
                                         display: "flex",
                                         alignItems: "center",
+                                        justifyContent: "space-between",
                                         border: "1px solid #d9ccc3",
                                         borderRadius: "4px",
-                                        height: 42,
-                                        px: 1,
                                         bgcolor: "#faf7f4",
+                                        height: { xs: "clamp(32px, 8vw, 42px)", sm: 42 },
+                                        px: { xs: "clamp(3px, 1vw, 8px)", sm: 1 },
+                                        flexShrink: 0,
                                     }}
                                 >
                                     <button
+                                        type="button"
                                         onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "16px", fontWeight: 600, color: "#2c221e", padding: "0 6px" }}
+                                        style={{
+                                            background: "none",
+                                            border: "none",
+                                            cursor: "pointer",
+                                            fontSize: "clamp(12px, 3vw, 16px)",
+                                            fontWeight: 600,
+                                            color: "#2c221e",
+                                            padding: 0,
+                                            lineHeight: 1,
+                                        }}
                                     >
                                         −
                                     </button>
-                                    <Typography sx={{ minWidth: 24, textAlign: "center", fontWeight: 600, fontSize: "0.88rem", color: "#2c221e" }}>
+                                    <Typography
+                                        sx={{
+                                            minWidth: { xs: "clamp(14px, 3.5vw, 24px)", sm: 24 },
+                                            textAlign: "center",
+                                            fontWeight: 600,
+                                            fontSize: "clamp(0.68rem, 2vw, 0.88rem)",
+                                            color: "#2c221e",
+                                            userSelect: "none",
+                                        }}
+                                    >
                                         {quantity}
                                     </Typography>
                                     <button
-                                        onClick={() => setQuantity((prev) => prev + 1)}
-                                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "16px", fontWeight: 600, color: "#2c221e", padding: "0 6px" }}
+                                        type="button"
+                                        onClick={() => setQuantity((prev) => Math.min(10, prev + 1))}
+                                        style={{
+                                            background: "none",
+                                            border: "none",
+                                            cursor: "pointer",
+                                            fontSize: "clamp(12px, 3vw, 16px)",
+                                            fontWeight: 600,
+                                            color: "#2c221e",
+                                            padding: 0,
+                                            lineHeight: 1,
+                                        }}
                                     >
                                         +
                                     </button>
                                 </Box>
 
+                                {/* 2. SƏBƏTƏ ƏLAVƏ ET DÜYMƏSİ */}
                                 <Button
                                     fullWidth
                                     onClick={() => shop?.addToCart && shop.addToCart(product, quantity)}
                                     sx={{
-                                        height: 42,
+                                        flex: 1,
+                                        minWidth: 0,
+                                        height: { xs: "clamp(32px, 8vw, 42px)", sm: 42 },
                                         bgcolor: "#241e1b",
                                         color: "#ffffff",
-                                        fontSize: "0.78rem",
+                                        fontSize: "clamp(0.55rem, 2.3vw, 0.78rem)", // 250px-də avtomatik kiçilir
                                         fontWeight: 600,
-                                        letterSpacing: "0.6px",
+                                        letterSpacing: { xs: "0.1px", sm: "0.6px" },
                                         textTransform: "uppercase",
                                         borderRadius: "4px",
+                                        whiteSpace: "nowrap",
+                                        px: { xs: "clamp(4px, 1.2vw, 12px)", sm: 2 },
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
                                         "&:hover": { bgcolor: "#3d322d" },
                                     }}
                                 >
                                     SƏBƏTƏ ƏLAVƏ ET • {(product.price * quantity).toFixed(2)} AZN
                                 </Button>
 
+                                {/* 3. FAVORİT DÜYMƏSİ */}
                                 <IconButton
                                     onClick={handleToggleFavorite}
                                     sx={{
-                                        width: 42,
-                                        height: 42,
+                                        width: { xs: "clamp(32px, 8vw, 42px)", sm: 42 },
+                                        height: { xs: "clamp(32px, 8vw, 42px)", sm: 42 },
                                         border: "1px solid #d9ccc3",
                                         borderRadius: "4px",
                                         bgcolor: "#fff",
+                                        flexShrink: 0,
+                                        p: 0,
                                         "&:hover": { bgcolor: "#faf7f4" },
                                     }}
                                 >
                                     {isFavorite ? (
-                                        <FavoriteIcon sx={{ color: "#9c0a06", fontSize: 20 }} />
+                                        <FavoriteIcon sx={{ color: "#9c0a06", fontSize: "clamp(14px, 4vw, 20px)" }} />
                                     ) : (
-                                        <FavoriteBorderIcon sx={{ color: "#4a3b34", fontSize: 20 }} />
+                                        <FavoriteBorderIcon sx={{ color: "#4a3b34", fontSize: "clamp(14px, 4vw, 20px)" }} />
                                     )}
                                 </IconButton>
                             </Box>
