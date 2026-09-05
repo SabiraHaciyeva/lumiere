@@ -15,7 +15,7 @@ function ProductList({
   showAllText = "HAMISINI GÖR",
   viewAllPath = "/collections",
 }) {
-  const scrollContainerRef = useRef(null);
+  const scrollContainerRef = useRef(null);//useRef: JavaScript-dəki document.getElementById("qutu") əmrinin React-dəki təhlükəsiz qarşılığıdır.
 
   const scroll = (direction) => {
     const container = scrollContainerRef.current;
@@ -51,7 +51,7 @@ function ProductList({
           >
             {title}
           </Typography>
-
+            
           <Button
             component={NavLink}
             to={viewAllPath}

@@ -18,25 +18,31 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { useAuth } from "../provider/AuthProvider";
 
+// tema rengleri
 const TEXT_DARK = "#2c221e";
 const TEXT_LIGHT = "#7a6b63";
 const BEIGE_BTN = "#8c7365";
 const BORDER_COLOR = "#e8ded7";
 
 export default function AuthModal({ open, onClose }) {
+  // providerden metodlari gotururuk
   const { login, register, loginWithGoogle } = useAuth();
 
+  // form rejim ve melumat state-leri
   const [mode, setMode] = useState("login");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // gorunus ve xeta state-leri
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [error, setError] = useState("");
 
+  // modali baglayanda butun inputlari sifirlayiriq
   const handleClose = () => {
     setError("");
     setFirstName("");
@@ -50,12 +56,13 @@ export default function AuthModal({ open, onClose }) {
     if (onClose) onClose();
   };
 
+  // rejim kecidi (login <-> register)
   const handleSwitchMode = (newMode) => {
     setError("");
     setMode(newMode);
   };
 
-  // Xəta yarananda modalı dərhal ən yuxarıya sürüşdürən funksiya
+  // xeta cixanda pencereni yuxari surusdururuk
   const triggerError = (msg) => {
     setError(msg);
     setTimeout(() => {
@@ -66,6 +73,7 @@ export default function AuthModal({ open, onClose }) {
     }, 50);
   };
 
+  // sifrenin gorunusunu deyisende kursoru axirda saxlayiriq
   const togglePasswordVisibility = (inputId, setter) => {
     setter((prev) => !prev);
     setTimeout(() => {
@@ -78,40 +86,97 @@ export default function AuthModal({ open, onClose }) {
     }, 0);
   };
 
+  // form tesdiqi ve deqiq yoxlama zenciri
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
 
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    const nameRegex = /^[a-zA-ZƏəİiIıĞğÖöŞşÜüÇç\s]+$/;
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanFirst = firstName.trim();
+    const cleanLast = lastName.trim();
+
     if (mode === "login") {
-      if (!email.trim() || !password) {
+      // login ucun esas yoxlamalar
+      if (!cleanEmail || !password) {
         triggerError("Zəhmət olmasa, bütün sahələri doldurun.");
         return;
       }
-      const res = login(email, password);
+      if (!emailRegex.test(cleanEmail)) {
+        triggerError("Düzgün e-poçt ünvanı daxil edin.");
+        return;
+      }
+
+      // login icrasi
+      const res = login(cleanEmail, password);
       if (!res?.success) {
         triggerError(res?.message || "Giriş uğursuz oldu.");
       } else {
         handleClose();
       }
     } else {
-      if (!firstName.trim() || !lastName.trim() || !email.trim() || !password || !confirmPassword) {
+      // qeydiyyat ucun sahelerin dolulugu
+      if (!cleanFirst || !cleanLast || !cleanEmail || !password || !confirmPassword) {
         triggerError("Zəhmət olmasa, bütün sahələri doldurun.");
         return;
       }
-      if (password.length < 6) {
-        triggerError("Şifrə minimum 6 simvol olmalıdır.");
+
+      // ad ve soyad uzunlugu (en azi 2 simvol)
+      if (cleanFirst.length < 2 || cleanLast.length < 2) {
+        triggerError("Ad və soyad minimum 2 hərfdən ibarət olmalıdır.");
         return;
       }
+
+      // ad ve soyadda yalniz herf olmalidir (reqem ve simvollar qadagandir)
+      if (!nameRegex.test(cleanFirst) || !nameRegex.test(cleanLast)) {
+        triggerError("Ad və soyadda yalnız hərflərdən istifadə oluna bilər.");
+        return;
+      }
+
+      // duzgun email yoxlanisi
+      if (!emailRegex.test(cleanEmail)) {
+        triggerError("Düzgün e-poçt ünvanı daxil edin (məs: example@mail.com).");
+        return;
+      }
+
+      // sifrede probel (bosluq) olmamalidir
+      if (/\s/.test(password)) {
+        triggerError("Şifrədə boşluq (space) simvolundan istifadə etmək olmaz.");
+        return;
+      }
+
+      // sifrenin uzunluq heddi
+      if (password.length < 6 || password.length > 32) {
+        triggerError("Şifrə 6 ilə 32 simvol arasında olmalıdır.");
+        return;
+      }
+
+      // sifrede en azi bir herf ve bir reqem olmalidir (her cur simvol serbestdir)
+      const hasLetter = /[a-zA-Z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      if (!hasLetter || !hasNumber) {
+        triggerError("Şifrədə ən azı bir hərf və bir rəqəm olmalıdır.");
+        return;
+      }
+
+      // sifrelerin uygunlugu
       if (password !== confirmPassword) {
         triggerError("Şifrələr bir-biri ilə uyğun gəlmir.");
         return;
       }
+
+      // qaydalarin tesdiqi
       if (!agreeTerms) {
         triggerError("İstifadə şərtlərini qəbul etməlisiniz.");
         return;
       }
-      const fullName = `${firstName.trim()} ${lastName.trim()}`;
-      const res = register(fullName, email, password);
+
+      // register icrasi
+      const fullName = `${cleanFirst} ${cleanLast}`;
+      const res = register(fullName, cleanEmail, password);
       if (!res?.success) {
         triggerError(res?.message || "Qeydiyyat uğursuz oldu.");
       } else {
@@ -120,6 +185,7 @@ export default function AuthModal({ open, onClose }) {
     }
   };
 
+  // google ile giris
   const handleGoogleAuth = async () => {
     setError("");
     try {
@@ -153,6 +219,7 @@ export default function AuthModal({ open, onClose }) {
         },
       }}
     >
+      {/* baglama duymesi */}
       <IconButton
         onClick={handleClose}
         size="small"
@@ -169,6 +236,7 @@ export default function AuthModal({ open, onClose }) {
       </IconButton>
 
       <DialogContent id="auth-dialog-content" sx={{ p: 0, mt: 1, overflowY: "auto" }}>
+        {/* modal basligi */}
         <Box sx={{ mb: 2.5 }}>
           <Typography
             variant="h5"
@@ -189,6 +257,7 @@ export default function AuthModal({ open, onClose }) {
           </Typography>
         </Box>
 
+        {/* xeta qutusu */}
         {error && (
           <Alert
             severity="error"
@@ -209,7 +278,9 @@ export default function AuthModal({ open, onClose }) {
           </Alert>
         )}
 
+        {/* form sahesi */}
         <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 1.8 }}>
+          {/* qeydiyyatda ad ve soyad */}
           {mode === "register" && (
             <>
               <Box>
@@ -262,6 +333,7 @@ export default function AuthModal({ open, onClose }) {
             </>
           )}
 
+          {/* email */}
           <Box>
             <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.5 }}>
               E-poçt ünvanı
@@ -287,6 +359,7 @@ export default function AuthModal({ open, onClose }) {
             />
           </Box>
 
+          {/* sifre sahesi */}
           <Box>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.5 }}>
               <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK }}>
@@ -309,7 +382,7 @@ export default function AuthModal({ open, onClose }) {
             <TextField
               id={mode === "login" ? "login-password" : "register-password"}
               name="password"
-              placeholder={mode === "login" ? "Şifrənizi daxil edin" : "Minimum 6 simvol"}
+              placeholder={mode === "login" ? "Şifrənizi daxil edin" : "Minimum 6 simvol (hərf və rəqəm)"}
               type={showPassword ? "text" : "password"}
               size="small"
               fullWidth
@@ -330,7 +403,7 @@ export default function AuthModal({ open, onClose }) {
                         onMouseDown={(e) => e.preventDefault()}
                         edge="end"
                         size="small"
-                        aria-label="Şifrəni göstər və ya gizlət"
+                        aria-label="Sifreni goster ve ya gizlet"
                         sx={{ color: TEXT_LIGHT }}
                       >
                         {showPassword ? <VisibilityOffOutlinedIcon fontSize="small" /> : <VisibilityOutlinedIcon fontSize="small" />}
@@ -351,6 +424,7 @@ export default function AuthModal({ open, onClose }) {
             />
           </Box>
 
+          {/* sifre tekrari (yalniz qeydiyyatda) */}
           {mode === "register" && (
             <Box>
               <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK, mb: 0.5 }}>
@@ -380,7 +454,7 @@ export default function AuthModal({ open, onClose }) {
                           onMouseDown={(e) => e.preventDefault()}
                           edge="end"
                           size="small"
-                          aria-label="Təkrar şifrəni göstər və ya gizlət"
+                          aria-label="Tekrar sifreni goster ve ya gizlet"
                           sx={{ color: TEXT_LIGHT }}
                         >
                           {showConfirmPassword ? <VisibilityOffOutlinedIcon fontSize="small" /> : <VisibilityOutlinedIcon fontSize="small" />}
@@ -402,6 +476,7 @@ export default function AuthModal({ open, onClose }) {
             </Box>
           )}
 
+          {/* sertler checkbox-u (yalniz qeydiyyatda) */}
           {mode === "register" && (
             <FormControlLabel
               control={
@@ -423,6 +498,7 @@ export default function AuthModal({ open, onClose }) {
             />
           )}
 
+          {/* tesdiq duymesi */}
           <Button
             type="submit"
             fullWidth
@@ -442,6 +518,7 @@ export default function AuthModal({ open, onClose }) {
             {mode === "login" ? "Daxil ol" : "Qeydiyyatdan keç"}
           </Button>
 
+          {/* google girisi (yalniz login rejiminde) */}
           {mode === "login" && (
             <>
               <Box sx={{ display: "flex", alignItems: "center", my: 0.5 }}>
@@ -479,6 +556,7 @@ export default function AuthModal({ open, onClose }) {
             </>
           )}
 
+          {/* rejim deyisdirme linki */}
           <Box sx={{ textAlign: "center", mt: 1 }}>
             {mode === "login" ? (
               <Typography sx={{ fontSize: "0.8rem", color: TEXT_LIGHT }}>

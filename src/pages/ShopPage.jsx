@@ -29,13 +29,10 @@ import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import TuneIcon from "@mui/icons-material/Tune";
 import CloseIcon from "@mui/icons-material/Close";
 
-// import { products } from "../data/product";
 import { useProducts } from "../context/ProductContext";
 import ProductCard from "../component/ProductCard";
 
-// =========================================================================
 // HƏRF NORMALLAŞDIRMA FUNKSİYASI (Azərbaycan hərfləri daxil)
-// =========================================================================
 const normalizeStr = (str = "") => {
     return str
         .toString()
@@ -52,9 +49,7 @@ const normalizeStr = (str = "") => {
         .replace(/I/g, "i");
 };
 
-// =========================================================================
 // DİNAMİK FİLTR XƏRİTƏSİ
-// =========================================================================
 const dynamicFilterConfig = {
     face: {
         subGroupTitle: "Üz Kateqoriyaları",
@@ -205,11 +200,7 @@ function ShopPage() {
 
     const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-    // =========================================================================
     // DÜZƏLİŞ 1: BÜTÜN STATE-LƏR YUXARIYA ÇIXARILDI
-    // (XƏTANIN ƏSAS SƏBƏBİ: Əvvəl currentPage aşağıda idi, amma yuxarıdakı useEffect onu çağırırdı.
-    // İndi bütün useState-lər useEffect-dən ƏVVƏL gəlir və initialization xətası aradan qaldırıldı.)
-    // =========================================================================
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(150);
     const [selectedSubGroups, setSelectedSubGroups] = useState([]);
@@ -220,11 +211,6 @@ function ShopPage() {
     const [columnsCount, setColumnsCount] = useState(4);
     const [currentPage, setCurrentPage] = useState(1);
 
-    // =========================================================================
-    // DÜZƏLİŞ 2: YUXARI SÜRÜŞDÜRMƏ (SCROLL TO TOP) EFFEKTİ
-    // (Buraya currentPage əlavə olundu: Artıq həm kateqoriya dəyişəndə, həm də pagination-da
-    // istər 1, 2, 3 rəqəmlərinə, istərsə də < və > oxlarına basanda səhifə dərhal və hamar başa qalxır.)
-    // =========================================================================
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [category, subCategory, currentPage]);
@@ -266,9 +252,7 @@ function ShopPage() {
         setCurrentPage(1);
     };
 
-    // =========================================================================
-    // MƏHSULLARI SÜZGƏCDƏN KEÇİRMƏ (Tam Dəqiq Başlanğıc Yoxlaması)
-    // =========================================================================
+    // usememo full filter prosesi
     const filteredProducts = useMemo(() => {
         if (!products || products.length === 0) return [];
 
@@ -400,7 +384,6 @@ function ShopPage() {
                 </Box>
             </Box>
 
-            {/* 1. QİYMƏT */}
             {/* 1. QİYMƏT */}
             <Accordion defaultExpanded disableGutters elevation={0} sx={{ "&:before": { display: "none" } }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ fontSize: 18 }} />} sx={{ p: 0, minHeight: 38 }}>
@@ -592,7 +575,6 @@ function ShopPage() {
         >
             <Container maxWidth="xl" sx={{ px: { xs: 1.5, sm: 2.5, md: 3 } }}>
 
-                {/* ÜST İDARƏETMƏ BARI */}
                 <Box
                     sx={{
                         display: "flex",
@@ -711,7 +693,7 @@ function ShopPage() {
                 {/* ƏSAS MƏZMUN (SOL FİLTR + SAĞ MƏHSULLAR) */}
                 <Box sx={{ display: "flex", gap: { md: 2.5, lg: 3.5 }, alignItems: "flex-start" }}>
 
-                    {/* SOL: DESKTOP FİLTR */}
+                    {/* desktop filter */}
                     {isDesktop && (
                         <Box
                             sx={{
@@ -735,7 +717,7 @@ function ShopPage() {
                         </Box>
                     )}
 
-                    {/* MOBİL FİLTR */}
+                    {/* drwaermui fro mobil */}
                     <Drawer
                         anchor="left"
                         open={mobileFilterOpen}
@@ -751,10 +733,9 @@ function ShopPage() {
                         {FilterContent}
                     </Drawer>
 
-                    {/* SAĞ: MƏHSULLAR TORU */}
                     <Box sx={{ flexGrow: 1, width: "100%", minWidth: 0 }}>
 
-                        {/* AXTARIŞ BİLDİRİŞİ VƏ SIFIRLAMA */}
+                        {/*reset search */}
                         {searchQuery && (
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
                                 <Typography sx={{ fontSize: "0.85rem", color: "#544640" }}>
@@ -803,7 +784,7 @@ function ShopPage() {
                             </Box>
                         )}
 
-                        {/* SƏHİFƏLƏMƏ (PAGINATION) */}
+                        {/* pagination */}
                         {totalPages > 1 && (
                             <Box sx={{ display: "flex", justifyContent: "center", mt: { xs: 4, md: 5 } }}>
                                 <Pagination
@@ -812,9 +793,7 @@ function ShopPage() {
                                     size={isDesktop ? "medium" : "small"}
                                     onChange={(e, val) => {
                                         setCurrentPage(val);
-                                        // =========================================================
                                         // DÜZƏLİŞ 3: ONCHANGE ZAMANI DA BİRBAŞA YUXARI QALXMAQ TƏMİN EDİLDİ
-                                        // =========================================================
                                         window.scrollTo({ top: 0, behavior: "smooth" });
                                     }}
                                     shape="rounded"

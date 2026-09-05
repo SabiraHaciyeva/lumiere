@@ -19,24 +19,20 @@ function ProductCard({ product, columnsCount = 4 }) {
   const favorites = shop.favorites || [];
   const isFavorite = favorites.some((fav) => fav.id === product.id);
 
-  // 1. FAVORİTƏ ƏLAVƏ / ÇIXARMA
+  // 1. Favorite icon func
   const handleToggleFavorite = (e) => {
     e.stopPropagation();
     if (shop.toggleFavorite) {
       shop.toggleFavorite(product);
-    } else if (isFavorite && shop.removeFromFavorites) {
-      shop.removeFromFavorites(product.id);
-    } else if (!isFavorite && shop.addToFavorites) {
-      shop.addToFavorites(product);
-    }
+    } 
   };
 
-  // 2. MƏHSUL DETALLARI SƏHİFƏSİNƏ KEÇİD
+  // 2. navigate
   const handleCardClick = () => {
     navigate(`/product/${product.id}`);
   };
 
-  // 3. ENDİRİM FAİZİ
+  // 3. faiz hesablaması
   const discountPercent =
     product.oldPrice && product.price
       ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
@@ -56,7 +52,6 @@ function ProductCard({ product, columnsCount = 4 }) {
         width: "100%",
         minWidth: 0,
         boxSizing: "border-box",
-        // Hər ölçüdə xalis yer buraxan elastik padding:
         p: { xs: 1, sm: 1.2, md: isFiveCols ? 1.2 : 1.5 },
         cursor: "pointer",
         transition: "all 0.25s ease",
@@ -248,7 +243,7 @@ function ProductCard({ product, columnsCount = 4 }) {
           mt: "auto",
         }}
       >
-        {/* Say Seçici */}
+        {/* +-lar */}
         <Box
           sx={{
             display: "flex",
@@ -292,7 +287,7 @@ function ProductCard({ product, columnsCount = 4 }) {
           </Typography>
           <button
             type="button"
-            onClick={() => setQuantity((prev) => prev + 1)}
+            onClick={() => setQuantity((prev) => Math.min(10, prev + 1))}
             style={{
               background: "none",
               border: "none",
@@ -307,8 +302,7 @@ function ProductCard({ product, columnsCount = 4 }) {
             +
           </button>
         </Box>
-
-        {/* Səbətə Əlavə Et Düyməsi (Sıxılmayan və daşmayan elastik ölçü) */}
+            {/* Səbətə əlavə et düyməsi */}
         <Button
           fullWidth
           onClick={() => shop.addToCart && shop.addToCart(product, quantity)}

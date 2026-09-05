@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const ProductContext = createContext();
 
-// MockAPI-dən aldığınız endpoint URL-i bura yazın:
 const API_URL = "https://6a9467280e895b145e5f6e42.mockapi.io/v1/data";
 
 export function ProductProvider({ children }) {

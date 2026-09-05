@@ -35,22 +35,16 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useProducts } from "../context/ProductContext";
 import { useShop } from "../provider/ShopProvider";
 
-
 import { useAuth } from "../provider/AuthProvider";
 import AuthModal from "./AuthModal";
 
-// =========================================================================
-// RƏNG PALİTRASI
-// =========================================================================
 const BEIGE = "#DAC0B1";
 const BEIGE_DARK = "#c4a996";
 const BEIGE_LIGHT = "#f3e8e0";
 const TEXT_DARK = "#2c221e";
 const TEXT_LIGHT = "#7a6b63";
 
-// =========================================================================
-// HƏRF NORMALLAŞDIRMA (Azərbaycan hərfləri daxil 100% dəqiq axtarış üçün)
-// =========================================================================
+//ingilis klavyaturasi
 const normalizeStr = (str = "") => {
   return str
     .toString()
@@ -67,9 +61,8 @@ const normalizeStr = (str = "") => {
     .replace(/I/g, "i");
 };
 
-// =========================================================================
 // MENYU STRUKTURU
-// =========================================================================
+//leftpages ve rightpages menunun sol ve sag hissesini teskil edir
 const leftPages = [
   {
     label: "KOLLEKSİYALAR",
@@ -127,7 +120,7 @@ const rightPages = [
     ],
   },
   {
-    label: "MAKİYAJ",
+    label: "MAKYAJ",
     path: "/makeup",
     subItems: [
       { label: "Tonal Kremlər & Korrektorlar", path: "/makeup/face-makeup" },
@@ -173,7 +166,7 @@ function Header() {
   const [authModalOpen, setAuthModalOpen] = useState(false); // Modal state-i
 
   const { products } = useProducts();
-  // Profil ikonuna kliklənmə funksiyası
+
   const handleProfileClick = () => {
     if (currentUser) {
       navigate("/profile"); // Daxil olubsa profil səhifəsinə get
@@ -183,13 +176,13 @@ function Header() {
     setMobileDrawerOpen(false);
   };
 
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const [mobileOpenMenu, setMobileOpenMenu] = useState("");
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);//burger
+  const [mobileOpenMenu, setMobileOpenMenu] = useState("");//akordiom
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [favoritesOpen, setFavoritesOpen] = useState(false);
 
-  // Zərif Slide-Down Search
+  //search
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef(null);
@@ -226,19 +219,53 @@ function Header() {
   const toggleMobileSubmenu = (label) => {
     setMobileOpenMenu(mobileOpenMenu === label ? "" : label);
   };
-
+  //cem pb
   const total = cart.reduce(
     (sum, product) =>
       sum + Number(product.price) * Number(product.quantity || 1),
     0
-  );
-
+  ).toFixed(2);
+  //sebetbadge
   const totalCartCount = cart.reduce(
     (sum, item) => sum + Number(item.quantity || 1),
     0
   );
 
-  // YALNIZ VƏ YALNIZ MƏHSUL ADINA GÖRƏ HƏSSAS FİLTR-----------++
+
+  const [coupon, setCoupon] = useState("");
+const [discount, setDiscount] = useState(0);
+const [couponError, setCouponError] = useState("");
+
+const applyCoupon = () => {
+  const clean = coupon.trim().toUpperCase();
+  if (clean === "LUMIERE10") {
+    setDiscount(10);
+    setCouponError("");
+    setCoupon("");
+  } else {
+    setCouponError("Kupon kodu tapılmadı!");
+  }
+};
+
+// 1. İlkin köhnə qiymətlərin cəmi (əgər endirim yoxdursa cari qiyməti götürür)
+const originalTotal = cart.reduce(
+  (sum, item) => sum + Number(item.oldPrice || item.price) * Number(item.quantity || 1),
+  0
+);
+
+// 2. Məhsulların cari satış cəmi
+const currentTotal = cart.reduce(
+  (sum, item) => sum + Number(item.price) * Number(item.quantity || 1),
+  0
+);
+
+// Məhsul endirimi varmı?
+const hasProductDiscounts = originalTotal > currentTotal;
+
+// 3. Kupon endirimi və Yekun ödəniş
+const couponAmount = (currentTotal * discount) / 100;
+const finalTotal = (currentTotal - couponAmount).toFixed(2);
+  //serach usememo
   const liveSearchResults = useMemo(() => {
     const query = searchQuery.trim();
     if (!query) return [];
@@ -248,7 +275,6 @@ function Header() {
     return products
       .filter((item) => {
         const cleanName = normalizeStr(item.name);
-        // YALNIZ ADIN ƏN BİRİNCİ HƏRFLƏRİ BU SÖZLƏ BAŞLAYIRSA
         return cleanName.startsWith(cleanQuery);
       })
       .slice(0, 6);
@@ -270,7 +296,7 @@ function Header() {
     setMobileDrawerOpen(false);
     setSearchQuery("");
   };
-
+  //dekstop dropdowmu
   const renderNavDropdown = (pages, isLeftGroup = true) => (
     <Box
       sx={{
@@ -398,7 +424,7 @@ function Header() {
         boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
       }}
     >
-      {/* 1. TOP ELAN BARI */}
+      {/* 1. Real Hero*/}
       <Box
         sx={{
           bgcolor: BEIGE,
@@ -448,10 +474,10 @@ function Header() {
               gap: { lg: 2, xl: 3 },
             }}
           >
-            {/* SOL MENYU */}
+            {/* left psge*/}
             {renderNavDropdown(leftPages, true)}
 
-            {/* MƏRKƏZ LOQO */}
+            {/* merkez logo */}
             <Box sx={{ textAlign: "center", px: { lg: 2, xl: 4 } }}>
               <NavLink
                 to="/"
@@ -489,7 +515,7 @@ function Header() {
               </NavLink>
             </Box>
 
-            {/* SAĞ MENYU VƏ İKONLAR */}
+            {/* right page+ikonalar */}
             <Box
               sx={{
                 display: "flex",
@@ -500,6 +526,7 @@ function Header() {
               {renderNavDropdown(rightPages, false)}
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, ml: 1 }}>
+                {/* Search ikonasi */}
                 <IconButton
                   onClick={() => setIsSearchOpen((prev) => !prev)}
                   sx={{
@@ -510,11 +537,11 @@ function Header() {
                 >
                   {isSearchOpen ? <CloseIcon sx={{ fontSize: 21 }} /> : <SearchIcon sx={{ fontSize: 21 }} />}
                 </IconButton>
-
+                  {/* Profil ikonasi */}
                 <IconButton onClick={handleProfileClick} sx={{ color: TEXT_DARK, p: 1 }} title={currentUser ? "Profilim" : "Giriş"}>
                   <PersonOutlineOutlinedIcon sx={{ fontSize: 21 }} />
                 </IconButton>
-
+                  {/* Favorit ikonasi */}
                 <IconButton onClick={openFavorites} sx={{ color: TEXT_DARK, p: 1 }}>
                   <Badge
                     badgeContent={favorites.length}
@@ -531,7 +558,7 @@ function Header() {
                     <FavoriteBorderOutlinedIcon sx={{ fontSize: 21 }} />
                   </Badge>
                 </IconButton>
-
+                    {/* Sebet ikonasi */}
                 <IconButton onClick={openCart} sx={{ color: TEXT_DARK, p: 1 }}>
                   <Badge
                     badgeContent={totalCartCount}
@@ -629,9 +656,7 @@ function Header() {
         </Container>
       </AppBar>
 
-      {/* ========================================================================= */}
-      {/* 3. ZƏRİF, İNCƏ VƏ YUMŞAQ SLIDE-DOWN SEARCH BAR */}
-      {/* ========================================================================= */}
+      {/* 3. dropsearch*/}
       <Slide
         direction="down"
         in={isSearchOpen}
@@ -1065,158 +1090,281 @@ function Header() {
       </Drawer>
 
       {/* 6. SƏBƏT DRAWER */}
-      <Drawer
-        anchor="right"
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        ModalProps={{ disableRestoreFocus: true }}
-      >
-        <Box
-          sx={{
-            width: { xs: "100vw", sm: 440 },
-            height: "100%",
-            boxSizing: "border-box",
-            backgroundColor: "#faf8f6",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Box
-            sx={{
-              p: 3,
-              pb: 2,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h5" sx={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-              Səbətim
-            </Typography>
-            <IconButton onClick={() => setCartOpen(false)}>
-              <Typography sx={{ fontSize: 28 }}>×</Typography>
-            </IconButton>
-          </Box>
-          <Divider />
-          <Box sx={{ flex: 1, overflowY: "auto", p: 3 }}>
-            {cart.length === 0 ? (
-              <Box sx={{ textAlign: "center", mt: 10 }}>
-                <Typography sx={{ color: "#777", mb: 3 }}>Səbətiniz boşdur</Typography>
-                <Button
-                  onClick={() => setCartOpen(false)}
-                  sx={{ backgroundColor: TEXT_DARK, color: "white", px: 3 }}
-                >
-                  Alış-verişə davam et
-                </Button>
-              </Box>
-            ) : (
-              cart.map((product) => (
-                <Box
-                  key={product.id}
-                  onClick={() => handleProductSelect(product.id)}
-                  sx={{
-                    display: "flex",
-                    gap: 2,
-                    py: 2,
-                    borderBottom: "1px solid #ddd",
-                    cursor: "pointer",
-                    "&:hover": { bgcolor: "rgba(0,0,0,0.01)" },
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 90,
-                      height: 100,
-                      flexShrink: 0,
-                      backgroundColor: "#f1ebe7",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {product.image ? (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                      />
-                    ) : (
-                      <Typography sx={{ fontSize: 11, color: "#999", textAlign: "center" }}>
-                        Şəkil yoxdur
-                      </Typography>
-                    )}
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography sx={{ fontWeight: 500, mb: 0.5 }}>{product.name}</Typography>
-                    <Typography sx={{ color: "#777", fontSize: 14, mb: 1.5 }}>
-                      {product.price} AZN
-                    </Typography>
-                    <Box
-                      onClick={(e) => e.stopPropagation()}
+      {/* SƏBƏT DRAWER */}
+<Drawer
+  anchor="right"
+  open={cartOpen}
+  onClose={() => setCartOpen(false)}
+  ModalProps={{ disableRestoreFocus: true }}
+>
+  <Box
+    sx={{
+      width: { xs: "100vw", sm: 420 },
+      height: "100%",
+      bgcolor: "#faf8f6",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    {/* BAŞLIQ */}
+    <Box sx={{ p: 2.5, px: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Typography variant="h6" sx={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.15rem" }}>
+        Səbətim ({totalCartCount})
+      </Typography>
+      <IconButton onClick={() => setCartOpen(false)} sx={{ color: TEXT_DARK, p: 0.5 }}>
+        <CloseIcon sx={{ fontSize: 20 }} />
+      </IconButton>
+    </Box>
+
+    <Divider sx={{ borderColor: "#ece5de" }} />
+
+    {/* MƏHSUL SİYAHISI */}
+    <Box sx={{ flex: 1, overflowY: "auto", px: 3 }}>
+      {cart.length === 0 ? (
+        <Box sx={{ textAlign: "center", mt: 10 }}>
+          <Typography sx={{ color: "#888", fontSize: "0.9rem" }}>Səbətiniz boşdur</Typography>
+        </Box>
+      ) : (
+        cart.map((product) => {
+          const hasDiscount = Boolean(
+            (product.oldPrice && Number(product.oldPrice) > Number(product.price)) || product.discount
+          );
+          const isNew = Boolean(product.isNew);
+
+          return (
+            <Box
+              key={product.id}
+              onClick={() => handleProductSelect(product.id)}
+              sx={{
+                display: "flex",
+                gap: 2,
+                py: 2,
+                borderBottom: "1px solid #efeae4",
+                cursor: "pointer",
+              }}
+            >
+              <Box
+                component="img"
+                src={product.image}
+                alt={product.name}
+                sx={{
+                  width: 70,
+                  height: 80,
+                  objectFit: "cover",
+                  bgcolor: "#f2ece6",
+                  borderRadius: 1,
+                  flexShrink: 0,
+                }}
+              />
+
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                  <Typography sx={{ fontSize: "0.85rem", fontWeight: 500, color: TEXT_DARK }} noWrap>
+                    {product.name}
+                  </Typography>
+
+                  {isNew && (
+                    <Typography
+                      component="span"
                       sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        width: "fit-content",
-                        border: "1px solid #ddd",
+                        fontSize: "0.62rem",
+                        fontWeight: 700,
+                        color: "#2e7d32",
+                        bgcolor: "#e8f5e9",
+                        px: 0.7,
+                        py: 0.1,
+                        borderRadius: "2px",
                       }}
                     >
-                      <Button
-                        onClick={() => decreaseQuantity(product.id)}
-                        sx={{ minWidth: 32, color: TEXT_DARK }}
-                      >
-                        −
-                      </Button>
-                      <Typography sx={{ minWidth: 25, textAlign: "center", fontSize: 14 }}>
-                        {product.quantity}
-                      </Typography>
-                      <Button
-                        onClick={() => increaseQuantity(product.id)}
-                        sx={{ minWidth: 32, color: TEXT_DARK }}
-                      >
-                        +
-                      </Button>
-                    </Box>
+                      YENİ
+                    </Typography>
+                  )}
+
+                  {hasDiscount && (
+                    <Typography
+                      component="span"
+                      sx={{
+                        fontSize: "0.62rem",
+                        fontWeight: 700,
+                        color: "#d32f2f",
+                        bgcolor: "#ffebee",
+                        px: 0.7,
+                        py: 0.1,
+                        borderRadius: "2px",
+                      }}
+                    >
+                      ENDİRİM
+                    </Typography>
+                  )}
+                </Box>
+
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.2 }}>
+                  <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: hasDiscount ? "#d32f2f" : TEXT_DARK }}>
+                    {Number(product.price).toFixed(2)} AZN
+                  </Typography>
+
+                  {hasDiscount && product.oldPrice && (
+                    <Typography sx={{ fontSize: "0.75rem", color: "#999", textDecoration: "line-through" }}>
+                      {Number(product.oldPrice).toFixed(2)} AZN
+                    </Typography>
+                  )}
+                </Box>
+
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <Box
+                    onClick={(e) => e.stopPropagation()}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      border: "1px solid #ded5cc",
+                      borderRadius: "3px",
+                      bgcolor: "#fff",
+                    }}
+                  >
+                    <Button
+                      onClick={() => decreaseQuantity(product.id)}
+                      sx={{ minWidth: 24, height: 24, p: 0, color: TEXT_DARK, fontSize: 13 }}
+                    >
+                      −
+                    </Button>
+                    <Typography sx={{ minWidth: 22, textAlign: "center", fontSize: "0.78rem" }}>
+                      {product.quantity}
+                    </Typography>
+                    <Button
+                      onClick={() => increaseQuantity(product.id)}
+                      sx={{ minWidth: 24, height: 24, p: 0, color: TEXT_DARK, fontSize: 13 }}
+                    >
+                      +
+                    </Button>
                   </Box>
+
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       removeFromCart(product.id);
                     }}
-                    sx={{
-                      minWidth: "auto",
-                      alignSelf: "flex-start",
-                      color: "#999",
-                      fontSize: 12,
-                    }}
+                    sx={{ minWidth: "auto", p: 0, color: "#999", fontSize: "0.72rem", textTransform: "none" }}
                   >
                     Sil
                   </Button>
                 </Box>
-              ))
-            )}
-          </Box>
-          {cart.length > 0 && (
-            <Box sx={{ p: 3, borderTop: "1px solid #ddd" }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                <Typography>Ümumi</Typography>
-                <Typography sx={{ fontWeight: 600 }}>{total} AZN</Typography>
               </Box>
+            </Box>
+          );
+        })
+      )}
+    </Box>
+
+    {/* FOOTER - QƏBZ VƏ SİFARİŞ */}
+    {cart.length > 0 && (
+      <Box sx={{ p: 2.5, px: 3, borderTop: "1px solid #ece5de", bgcolor: "#fff" }}>
+        {/* KUPON GİRİŞİ VƏ XƏTA */}
+        <Box sx={{ mb: 1.5 }}>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <InputBase
+              value={coupon}
+              onChange={(e) => {
+                setCoupon(e.target.value);
+                setCouponError("");
+              }}
+              placeholder={discount > 0 ? `LUMIERE10 (-${discount}%)` : "Kupon kodu"}
+              disabled={discount > 0}
+              sx={{
+                flex: 1,
+                border: `1px solid ${couponError ? "#d32f2f" : "#e0d8d0"}`,
+                px: 1.2,
+                py: 0.3,
+                fontSize: "0.78rem",
+                borderRadius: "2px",
+              }}
+            />
+            {discount > 0 ? (
               <Button
-                fullWidth
+                onClick={() => setDiscount(0)}
+                sx={{ color: "#d32f2f", fontSize: "0.72rem", textTransform: "none", minWidth: "auto", p: 0.5 }}
+              >
+                Sil
+              </Button>
+            ) : (
+              <Button
+                onClick={applyCoupon}
                 sx={{
-                  backgroundColor: TEXT_DARK,
-                  color: "white",
-                  py: 1.5,
-                  "&:hover": { backgroundColor: "#444" },
+                  bgcolor: TEXT_DARK,
+                  color: "#fff",
+                  px: 1.5,
+                  fontSize: "0.72rem",
+                  borderRadius: "2px",
+                  "&:hover": { bgcolor: "#444" },
                 }}
               >
-                Sifarişi rəsmiləşdir
+                Tətbiq et
               </Button>
-            </Box>
+            )}
+          </Box>
+
+          {couponError && (
+            <Typography sx={{ color: "#d32f2f", fontSize: "0.7rem", mt: 0.4, pl: 0.5 }}>
+              {couponError}
+            </Typography>
           )}
         </Box>
-      </Drawer>
+
+        {/* HESAB-FAKTURA / QƏBZ */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.6, mb: 1.5 }}>
+          {/* Məhsullar və endirimli üstü xətli cəm */}
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography sx={{ fontSize: "0.8rem", color: "#777" }}>Məhsulların cəmi</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {hasProductDiscounts && (
+                <Typography sx={{ fontSize: "0.75rem", color: "#999", textDecoration: "line-through" }}>
+                  {originalTotal.toFixed(2)} AZN
+                </Typography>
+              )}
+              <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: TEXT_DARK }}>
+                {currentTotal.toFixed(2)} AZN
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Kupon endirimi sətri */}
+          {discount > 0 && (
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography sx={{ fontSize: "0.8rem", color: "#d32f2f" }}>Kupon endirimi ({discount}%)</Typography>
+              <Typography sx={{ fontSize: "0.8rem", color: "#d32f2f", fontWeight: 600 }}>
+                -{couponAmount.toFixed(2)} AZN
+              </Typography>
+            </Box>
+          )}
+
+          <Divider sx={{ my: 0.4, borderColor: "#f0eae4" }} />
+
+          {/* Yekun nəticə */}
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <Typography sx={{ fontSize: "0.9rem", fontWeight: 600, color: TEXT_DARK }}>Yekun ödəniş</Typography>
+            <Typography sx={{ fontSize: "1.1rem", fontWeight: 700, color: TEXT_DARK }}>{finalTotal} AZN</Typography>
+          </Box>
+        </Box>
+
+        {/* SİFARİŞ DÜYMƏSİ */}
+        <Button
+          fullWidth
+          sx={{
+            bgcolor: TEXT_DARK,
+            color: "#fff",
+            py: 1.1,
+            fontSize: "0.82rem",
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            borderRadius: "2px",
+            "&:hover": { bgcolor: "#444" },
+          }}
+        >
+          Sifarişi rəsmiləşdir
+        </Button>
+      </Box>
+    )}
+  </Box>
+</Drawer>
       {/* GİRİŞ / QEYDİYYAT MODALI */}
       <AuthModal
         open={authModalOpen}

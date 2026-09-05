@@ -91,11 +91,7 @@ function ProductDetail() {
     const handleToggleFavorite = () => {
         if (shop?.toggleFavorite) {
             shop.toggleFavorite(product);
-        } else if (isFavorite && shop?.removeFromFavorites) {
-            shop.removeFromFavorites(product.id);
-        } else if (!isFavorite && shop?.addToFavorites) {
-            shop.addToFavorites(product);
-        }
+        } 
     };
 
     // Endirim faizinin hesablanması
@@ -108,7 +104,6 @@ function ProductDetail() {
         <Box
             sx={{
                 bgcolor: "#faf7f4",
-                // Hər ekran ölçüsündə Navbar-ın real hündürlüyünə uyğun dəqiq boşluq:
                 pt: { xs: 13, sm: 14, md: 15, lg: 16 },
                 pb: { xs: 4, md: 6 },
             }}

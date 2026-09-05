@@ -3,11 +3,8 @@ import { createContext, useContext, useState, useEffect } from "react";
 const ShopContext = createContext();
 
 export function ShopProvider({ children }) {
-  // =========================================================================
-  // 1. LOCALSTORAGE-DƏN İLKİN MƏLUMATLARIN OXUNMASI (Lazy Initial State)
-  // =========================================================================
-  
-  // Sevimliləri LocalStorage-dən götürürük (yoxdursa boş massiv [])
+// 1. Lokalstorage-dən məlumatları oxumaq 
+//favorit
   const [favorites, setFavorites] = useState(() => {
     try {
       const savedFavorites = localStorage.getItem("lumiere_favorites");
@@ -17,8 +14,7 @@ export function ShopProvider({ children }) {
       return [];
     }
   });
-
-  // Səbəti LocalStorage-dən götürürük (yoxdursa boş massiv [])
+//sebet
   const [cart, setCart] = useState(() => {
     try {
       const savedCart = localStorage.getItem("lumiere_cart");
@@ -29,11 +25,9 @@ export function ShopProvider({ children }) {
     }
   });
 
-  // =========================================================================
-  // 2. DƏYİŞİKLİKLƏRİN LOCALSTORAGE-Ə AVTOMATİK YAZILMASI
-  // =========================================================================
+  // 2. LocalStorage-a məlumatları yazmaq
 
-  // Favoritlər hər dəfə dəyişəndə LocalStorage yenilənir
+  //favorit
   useEffect(() => {
     try {
       localStorage.setItem("lumiere_favorites", JSON.stringify(favorites));
@@ -42,7 +36,7 @@ export function ShopProvider({ children }) {
     }
   }, [favorites]);
 
-  // Səbət hər dəfə dəyişəndə LocalStorage yenilənir
+  //sebet
   useEffect(() => {
     try {
       localStorage.setItem("lumiere_cart", JSON.stringify(cart));
@@ -51,16 +45,14 @@ export function ShopProvider({ children }) {
     }
   }, [cart]);
 
-  // =========================================================================
-  // 3. FAVORİT FUNKSİYALARI
-  // =========================================================================
+  // 3. Favorit funksiyaları
 
-  // Favoritlərdən silmək
+  // Favoritlərdən silmək(sirf silmek)
   const removeFromFavorites = (productId) => {
     setFavorites((prev) => prev.filter((item) => item.id !== productId));
   };
 
-  // Favoritə əlavə etmək və ya varsa çıxarmaq (Toggle)
+  // Favoritə əlavə etmək+silmek(icon)
   const toggleFavorite = (product) => {
     setFavorites((prev) => {
       const exists = prev.some((item) => item.id === product.id);
@@ -107,9 +99,7 @@ export function ShopProvider({ children }) {
     );
   };
 
-  // =========================================================================
-  // 4. SƏBƏT FUNKSİYALARI
-  // =========================================================================
+  // 4. Sebət funksiyaları
 
   // Səbətə əlavə etmək (əgər varsa sayını artırır, yoxdursa yeni əlavə edir)
   const addToCart = (product, quantity = 1) => {
@@ -121,7 +111,7 @@ export function ShopProvider({ children }) {
           item.id === product.id
             ? {
                 ...item,
-                quantity: item.quantity + quantity,
+                quantity: Math.min(10, item.quantity + quantity),
               }
             : item
         );
@@ -131,7 +121,7 @@ export function ShopProvider({ children }) {
         ...prev,
         {
           ...product,
-          quantity: quantity,
+          quantity: Math.min(10, quantity),
         },
       ];
     });
@@ -144,7 +134,7 @@ export function ShopProvider({ children }) {
         item.id === productId
           ? {
               ...item,
-              quantity: item.quantity + 1,
+              quantity: Math.min(10, item.quantity + 1),
             }
           : item
       )
